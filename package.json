@@ -1,16 +1,35 @@
 {
-  "name": "ata.js",
-  "version": "8.0.5",
-  "description": "ATA.js is a programmatic life cycle system for Javascript and typescript.",
-  "main": "index.js",
-  "scripts": {
-    "test": "npx mocha"
-  },
-  "keywords": [
-    "ata",
-    "life",
-    "cycle"
-  ],
-  "author": "Mustafa ÖZVER",
-  "license": "ISC"
+	"name": "ata.js",
+	"version": "9.0.2",
+	"description": "ATA.js is a programmatic life cycle system for Javascript and typescript.",
+	"main": "index.js",
+	"scripts": {
+		"test": "npx mocha"
+		
+	},
+	"bin": {
+		"ata_init": "./bin/init.js",
+		"ata_test": "./bin/test.js"
+		
+	},
+	"keywords": [
+		"ata",
+		"life",
+		"cycle"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Mustafaozver/ata.js.git"
+	},
+	"engines": {
+		"node": ">=13"
+	},
+	"devDependencies": {
+		"mocha":"10.2.0"
+	},
+	"author": "Mustafa ÖZVER",
+	"license": "GPL-3.0-only"
 }
+
+
+

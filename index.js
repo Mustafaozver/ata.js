@@ -1,42 +1,18 @@
 /****************************************************************************************************
 *	
-*	A JavaScript LifeCycle Library (And also a Manifest) : ATA.JS (V8.0.5 Beta)
+*	A JavaScript LifeCycle Library (And also a Manifest) : ATA.JS (V9.0.2 Beta)
 *	https://github.com/mustafaozver/ata.js/
-*	
-*	--------------------------------------------- (C) ----------------------------------------------
-*	
+*
 *	Author : Mustafa ÖZVER
 *	<mustafa.ozver@hotmail.com>
-*	
-*	Distributed under the BSD license:
-*	
-*	Copyright 2022 (c) Mustafa ÖZVER <mustafa.ozver@hotmail.com>
-*	
-*	Redistribution and use in source and binary forms, with or without modification, are permitted
-*	provided that the following conditions are met:
-*            
-*		* Redistributions of source code must retain the above copyright notice, this list of
-*	conditions and the following disclaimer.
-*	
-*		* Redistributions in binary form must reproduce the above copyright notice, this list of
-*	conditions and the following disclaimer in the documentation and/or other materials provided
-*	with the distribution.
-*	
-*	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
-*	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-*	A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE 	LIABLE FOR ANY
-*	DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-*	LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-*	BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-*	STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
-*	THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
 ****************************************************************************************************/
 
-var NAME = "";
-var VERSION = "";
-var DESCRIPTION = "";
-var COPYRIGHT = "";
-var LICENSE = "";
+const NAME = "";
+const VERSION = "";
+const DESCRIPTION = "";
+const COPYRIGHT = "";
+const LICENSE = "";
 
 if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	if(!GLOBAL["Infinity"])GLOBAL["Infinity"] = 99999999999999999;
@@ -82,13 +58,13 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 					default:break;
 					case "array": // Array
 						text = [];
-						for(var i=0;i<obj.length;i++) text.push(DecodeObject(obj[i]));
+						for(let i=0;i<obj.length;i++) text.push(DecodeObject(obj[i]));
 						return "[" + text.join(",") + "]";
 						break;
 					case "object": // Object
-						var keys = Object.keys(obj);
+						let keys = Object.keys(obj);
 						text = "";
-						for (var i=0;i<keys.length;i++) {
+						for (let i=0;i<keys.length;i++) {
 							try{
 								if(!obj[keys[i]])continue; // Unreadable values
 								//if(keys[i] == "")continue;
@@ -157,32 +133,33 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	};
 	const DoFinalize = function(func, args){
 		const THAT = this;
-		setTimeout(function(){
+		setTimeout(()=>{
 			func.apply(THAT,[...args]);
 		},1);
 	};
 	const waitUntil = async function(if_, eval_,time_=25) {
-		let promise = new Promise(function(resolve, reject) {
-			var f_temp = function() {
-				if (eval(if_)) {
-					delete f_temp;
-					resolve();
-				} else {
-					setTimeout(f_temp,time_);
-				}
+		return await new Promise((resolve, reject)=>{
+			const f_temp = ()=>{
+				if(eval(if_))resolve(eval(eval_));
+				else setTimeout(f_temp,time_);
 			};
 			f_temp();
-		}).then(function() {
-			return eval(eval_);
 		});
-		promise = await promise;
-		return promise;
 	};
 	const isTimeCycled = function(lasttime, period){
 		const thisTime = (new Date()).getTime();
 		const PivotTime = thisTime % period;
 		const lastPivotTime = lasttime % period;
 		return(PivotTime < lastPivotTime);
+	};
+	const _require = (modnames)=>{
+		for(let n=0;n<modnames.length;n++){
+			try{
+				return require(modnames[n]);
+			}catch(e){}
+		}
+		throw new Error("Module is not loaded.");
+		return false;
 	};
 	var ATA = function(){};
 	Object.assign(ATA.prototype,{
@@ -201,6 +178,7 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 			}).toUpperCase(),
 		}
 	});
+	var ANA = ATA;
 	var ATA = new ATA();
 	Object.assign(ATA,{
 		LastActivite:0,
@@ -271,43 +249,43 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	});
 	Object.assign(ATA, {
 		Name		: "ATA.JS for Node.JS",
-		Version		: "Beta 8.0.5.0-00",
+		Version		: "Beta 9.0.2.0-00",
 		Description	: "",
-		CopyRight	: "Copyright (C) 2022",
+		CopyRight	: "Copyright (C) 2023",
 		isReady		: false,
 		isDebug		: false,
 		isMaster	: false,
 	});
 	ATA.__reqs = {};
-	ATA.__load = {};
-	ATA.Require = function(name){
-		name = "node:" + name;
+	ATA.Require = (name)=>{ // root
 		try{
-			if(this.__reqs[name])return this.__reqs[name];
-			return(this.__reqs[name] = this.GLOBAL[name] = require(name));
+			if(ATA.__reqs[name])return ATA.__reqs[name];
+			const module = _require([
+				"node:" + name,
+				ATA.Path.join(ATA.CWD, "" + name),
+				name
+			]);
+			return(ATA.__reqs[name] = module);
 		}catch(e){
-			console.log("Module " + name + " is missing.", e);
+			console.log("Module " + name + " is missing or corrupted.", e);
 		}
-		//throw new Error("Uncompleted");
-	};
-	ATA.Load = function(name){
-		name = ATA.Path.join(ATA.CWD, "" + name);
-		try{
-			if(this.__load[name])return this.__load[name];
-			return(this.__load[name] = this.GLOBAL[name] = require(name));//eval("var x = " + ATA.FS.readFileSync(name, {encoding:"utf8", flag:"r"}) + ";x"));
-			;
-		}catch(e){
-			console.log("File " + name + " is missing.", e);
-		}
-		//throw new Error("Uncompleted");
 	};
 	ATA.GLOBAL = GLOBAL;
 	//GLOBAL.ATA = ATA;
-	ATA.Settings.ID = "ATAV7_" + ATA.UUID.Generate();
+	ATA.Settings.ID = "ATAV8_" + ATA.UUID.Generate();
 	GLOBAL.NAME = ATA.Name;
 	GLOBAL.VERSION = ATA.Version;
 	GLOBAL.DESCRIPTION = ATA.Description;
 	GLOBAL.COPYRIGHT = ATA.CopyRight;
+	
+	
+	//
+	const process = GLOBAL.process;
+	
+	//
+	//GLOBAL.process = null;
+	
+	
 	ATA.OnMessage = function(e){
 		if(e.data.EVAL){
 			var generatedRes;
@@ -335,11 +313,11 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 		}
 	};
 	process.on("unhandledRejection", function(err){
-		console.log("Unhandled rejection:", err.toString());
+		console.log("Unhandled rejection => ", err.toString(), err);
 		//process.exit();
 	});
-	process.on('uncaughtException', function (err) {
-		console.log('Caught exception: ', err.toString(), err);
+	process.on("uncaughtException", function (err) {
+		console.log("Caught exception => ", err.toString(), err);
 		//process.exit();
 	});
 	process.on("message", async(data)=>{
@@ -356,16 +334,16 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	};
 	setTimeout(async function(){ // Start trigger
 		setInterval(function(){ // Time => /|. Clock
-			var thisTime = (new Date()).getTime();
-			var PivotTime = thisTime % ATA.LoopTime;
-			var lastPivotTime = ATA.LastActivite % ATA.LoopTime;
+			const thisTime = (new Date()).getTime();
+			const PivotTime = thisTime % ATA.LoopTime;
+			const lastPivotTime = ATA.LastActivite % ATA.LoopTime;
 			if(PivotTime < lastPivotTime){
 				ATA.CheckSystem();
 			}
 			ATA.LastActivite = thisTime;
-			var title = ATA.Name + " V(" + ATA.Version + ") " + (new Date(thisTime)) + " " + FormatTime(thisTime - ATA.StartTime);
-			ATA.__title = title;
-			process.stdout.write(String.fromCharCode(27) + "]0;" + title + String.fromCharCode(7));
+			//var title = ATA.Name + " V(" + ATA.Version + ") " + (new Date(thisTime)) + " " + FormatTime(thisTime - ATA.StartTime);
+			//ATA.__title = title;
+			//process.stdout.write(String.fromCharCode(27) + "]0;" + title + String.fromCharCode(7));
 		},200);
 	},10);
 	
@@ -375,30 +353,40 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	ATA.FormatTime = FormatTime;
 	ATA.DecodeObject = DecodeObject;
 	
-	ATA.Path = ATA.Require("path");
-	ATA.FS = ATA.Require("fs");
 	ATA.CWD = process.cwd();
+	ATA.Path = require("path");
+	ATA.FS = require("fs");
 	
 	GLOBAL["ATA"] = function(){
 		return ATA;
 	};
+	
+	GLOBAL["ANA"] = function(){
+		return ANA;
+	};
+	
 	module.exports = ()=>{
 		return ATA;
 	};
+	
 	ATA.Thread = require("./Thread.js");
-	let folders = [ATA.CWD];
-	const readFolder = (n=0)=>{
-		if(!(n < folders.length))return;
-		const path = folders[n];
-		ATA.FS.readdirSync(path).map((filename)=>{
-			const filepath = ATA.Path.join(path, filename);
-			if(ATA.FS.statSync(filepath).isDirectory())folders.push(filepath);
-			//else if()
-			console.log(filepath);
-		});
-		readFolder(n+1);
+	
+	const SandBox = require("./SandBox.js");
+	const _class = class{
+		path = "";
+		constructor(){
+			
+		};
 	};
-	readFolder(0);
-	delete folders;
+	
+	Object.assign(ATA, require("./Classes.js")(_class));
+	
+	ATA.Inject = (name, obj={}, args=[])=>{
+		return SandBox.Require(name, obj, args);
+	};
+	
+	
+	
+	
 })((function(){return this})());
 else throw new Error("ATA is already called.");
