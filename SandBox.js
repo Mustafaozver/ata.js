@@ -200,11 +200,6 @@ module.exports = ((ATA)=>{
 		return new Proxy(globals, handler);
 	};
 	
-	
-	
-	
-	
-	
 	const RunJS = (code="", obj={}, args=[])=>{
 		try{
 			const sandbox = GenerateDefault(obj);//, console.log);
@@ -220,16 +215,8 @@ module.exports = ((ATA)=>{
 		}), obj, [...args]);
 	};
 	
-	
-	
-	
-	
-	
-	
 	return{
 		RunJS,
 		Require,
 	};
-	
-	
 })(ATA());

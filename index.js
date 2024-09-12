@@ -278,13 +278,48 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	GLOBAL.DESCRIPTION = ATA.Description;
 	GLOBAL.COPYRIGHT = ATA.CopyRight;
 	
-	
 	//
 	const process = GLOBAL.process;
+	const global = GLOBAL.global;
+	
+	const setTimeout = GLOBAL.setTimeout;
+	const setInterval = GLOBAL.setInterval;
+	const setImmediate = GLOBAL.setImmediate;
+	
+	const clearTimeout = GLOBAL.clearTimeout;
+	const clearInterval = GLOBAL.clearInterval;
+	const clearImmediate = GLOBAL.clearImmediate;
+	
+	const queueMicrotask = GLOBAL.queueMicrotask;
+	const structuredClone = GLOBAL.structuredClone;
+	const atob = GLOBAL.atob;
+	const btoa = GLOBAL.btoa;
+	const performance = GLOBAL.performance;
+	const fetch = GLOBAL.fetch;
+	const NAME = GLOBAL.NAME;
+	const VERSION = GLOBAL.VERSION;
+	const DESCRIPTION = GLOBAL.DESCRIPTION;
+	const COPYRIGHT = GLOBAL.COPYRIGHT;
 	
 	//
-	//GLOBAL.process = null;
+	//GLOBAL.global = null;
+	//GLOBAL.process = ()=>{return process;};
+	//GLOBAL.queueMicrotask = null;
+	//GLOBAL.clearImmediate = null;
+	//GLOBAL.setImmediate = null;
+	//GLOBAL.structuredClone = null;
+	//GLOBAL.clearInterval = null;
+	//GLOBAL.clearTimeout = null;
+	//GLOBAL.setInterval = null;
+	//GLOBAL.setTimeout = null;
+	//GLOBAL.atob = null;
+	//GLOBAL.btoa = null;
+	//GLOBAL.performance = null;
+	//GLOBAL.fetch = null;
 	
+	////GLOBAL.Exit = null;
+	////GLOBAL.ATA = null;
+	////GLOBAL.ANA = null;
 	
 	ATA.OnMessage = function(e){
 		if(e.data.EVAL){
@@ -354,6 +389,7 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	ATA.DecodeObject = DecodeObject;
 	
 	ATA.CWD = process.cwd();
+	ATA.MWD = __dirname;
 	ATA.Path = require("path");
 	ATA.FS = require("fs");
 	
