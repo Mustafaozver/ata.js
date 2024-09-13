@@ -421,8 +421,5 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 		return SandBox.Require(name, obj, args);
 	};
 	
-	
-	
-	
 })((function(){return this})());
 else throw new Error("ATA is already called.");

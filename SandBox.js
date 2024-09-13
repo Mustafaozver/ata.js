@@ -1,5 +1,8 @@
 module.exports = ((ATA)=>{
 	const SHARE = {};
+	
+	const PrivateKey = Symbol();
+	
 	const _GetParam = (key="")=>{
 		return SHARE[key + ""];
 	};
