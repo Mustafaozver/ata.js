@@ -1,6 +1,6 @@
 {
 	"name": "ata.js",
-	"version": "9.0.4",
+	"version": "9.0.5",
 	"description": "ATA.js is a programmatic life cycle system for Javascript and typescript.",
 	"main": "index.js",
 	"scripts": {
