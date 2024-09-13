@@ -3,7 +3,7 @@
 	describe("Step 1: start", function(){
 		it("Version Control", function(done){
 			var ver = "" + ATA;
-			assert.equal("ATA.JS for Node.JS V(Beta 9.0.3.0-00)", ver)
+			assert.equal("ATA.JS for Node.JS V(Beta 9.0.4.0-00)", ver)
 			done();
 		});
 		it("Setup test", function(done){

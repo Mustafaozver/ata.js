@@ -1,6 +1,6 @@
 /****************************************************************************************************
 *	
-*	A JavaScript LifeCycle Library (And also a Manifest) : ATA.JS (V9.0.3 Beta)
+*	A JavaScript LifeCycle Library (And also a Manifest) : ATA.JS (V9.0.4 Beta)
 *	https://github.com/mustafaozver/ata.js/
 *
 *	Author : Mustafa ÖZVER
@@ -249,7 +249,7 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	});
 	Object.assign(ATA, {
 		Name		: "ATA.JS for Node.JS",
-		Version		: "Beta 9.0.3.0-00",
+		Version		: "Beta 9.0.4.0-00",
 		Description	: "",
 		CopyRight	: "Copyright (C) 2023",
 		isReady		: false,
