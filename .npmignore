@@ -3,3 +3,4 @@ node_modules
 ntest
 develop.sh
 run_test.sh
+GIT_MSG.txt
