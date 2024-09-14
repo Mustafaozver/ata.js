@@ -10,8 +10,30 @@ module.exports = ((ATA)=>{
 		SHARE[key + ""] = value;
 	};
 	
+	const ScopeRegister = (scope)=>{
+		scope[PrivateKey] = {
+			
+		};
+		return true;
+		Object.defineProperty(scope, "process", {
+			get: function(){
+				return process;
+			},
+			set: function(value){
+				
+			}
+		});
+		
+	};
+	
+	const ScopeCheck = (scope)=>{
+		if(scope[PrivateKey])return true;
+		else return false;
+	};
+	
 	const GenerateDefault = (obj, log=()=>{})=>{
 		const globals = {
+			_:true,
 			// İşletim Sistemi ve Çevresel Değişkenlere Erişim
 			"process": null,
 			"os": null,
@@ -142,60 +164,63 @@ module.exports = ((ATA)=>{
 		
 		const handler = {
 			get(target, property){
-				log("get", { target, property });
-				return target[property];
+				if(property === "_")return ScopeRegister(target);
+				else if (ScopeCheck(target))return target[property];
+				console.log("NO");
 			},
 			set(target, property, value){
-				log("set", { target, property, value });
+				//log("set", { target, property, value });
 				target[property] = value;
 				return true; // Atamanın başarılı olduğunu belirtir
 			},
 			has(target, property){
-				log("has", { target, property });
-				return property in target;
+				if(property === "_")return ScopeRegister(target);
+				else if(ScopeCheck(target))return property in target;
+				console.log("NO");
+				return false;
 			},
 			apply(target, thisArg, argumentsList) {
-				log("apply", { target, thisArg, argumentsList });
+				//log("apply", { target, thisArg, argumentsList });
 				return target.apply(thisArg, argumentsList);
 			},
 			construct(target, args){
-				log("construct", { target, args });
+				//log("construct", { target, args });
 				return new target(...args);
 			},
 			
 			defineProperty(target, property, attributes){
-				log("defineProperty", { target, property, attributes });
+				//log("defineProperty", { target, property, attributes });
 				return Object.defineProperty(target, property, attributes);
 			},
 			deleteProperty(target, property){
-				log("deleteProperty", { target, property, value });
+				//log("deleteProperty", { target, property, value });
 				delete target[property];
 				return true;
 			},
 			
 			getOwnPropertyDescriptor(target, property){
-				log("getOwnPropertyDescriptor", { target, property, value });
+				//log("getOwnPropertyDescriptor", { target, property, value });
 				return Object.getOwnPropertyDescriptor(target, property);
 			},
 			isExtensible(target){
-				log("isExtensible", { target, property, value });
+				//log("isExtensible", { target, property, value });
 				return Object.isExtensible(target);
 			},
 			ownKeys(target){
-				log("ownKeys", { target, property, value });
+				//log("ownKeys", { target, property, value });
 				return Object.keys(target);
 			},
 			preventExtensions(target){
-				log("preventExtensions", { target });
+				//log("preventExtensions", { target });
 				return Object.preventExtensions(target);
 			},
 			
 			setPrototypeOf(target, value){
-				log("setPrototypeOf", { target, property, value });
+				//log("setPrototypeOf", { target, property, value });
 				return Object.setPrototypeOf(target, prototype);
 			},
 			getPrototypeOf(target){
-				log("getPrototypeOf", { target, property, value });
+				//log("getPrototypeOf", { target, property, value });
 				return Object.getPrototypeOf(target);
 			},
 		};

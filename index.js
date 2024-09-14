@@ -178,6 +178,14 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 			}).toUpperCase(),
 		}
 	});
+	/*Object.defineProperty(ATA.prototype, "process", {
+		get: function(){
+			return process;
+		},
+		set: function(value){
+			
+		}
+	});*/
 	var ANA = ATA;
 	var ATA = new ATA();
 	Object.assign(ATA,{
@@ -300,6 +308,26 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	const VERSION = GLOBAL.VERSION;
 	const DESCRIPTION = GLOBAL.DESCRIPTION;
 	const COPYRIGHT = GLOBAL.COPYRIGHT;
+	
+	//
+	//GLOBAL.global = null;
+	//GLOBAL.process = ()=>{return process;};
+	//GLOBAL.queueMicrotask = null;
+	//GLOBAL.clearImmediate = null;
+	//GLOBAL.setImmediate = null;
+	//GLOBAL.structuredClone = null;
+	//GLOBAL.clearInterval = null;
+	//GLOBAL.clearTimeout = null;
+	//GLOBAL.setInterval = null;
+	//GLOBAL.setTimeout = null;
+	//GLOBAL.atob = null;
+	//GLOBAL.btoa = null;
+	//GLOBAL.performance = null;
+	//GLOBAL.fetch = null;
+	
+	////GLOBAL.Exit = null;
+	////GLOBAL.ATA = null;
+	////GLOBAL.ANA = null;
 	
 	//
 	//GLOBAL.global = null;
