@@ -231,7 +231,7 @@ module.exports = ((ATA)=>{
 	const RunJS = (code="", obj={}, args=[])=>{
 		try{
 			const sandbox = GenerateDefault(obj);//, console.log);
-			return Function("try{with(this){" + code + "}}catch(e){return e}").apply(sandbox, [...args]);
+			return Function("try{with(this){_;" + code + "}}catch(e){return e}").apply(sandbox, [...args]);
 		}catch(e){
 			return e;
 		}

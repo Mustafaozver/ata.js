@@ -10,7 +10,8 @@
 	"bin": {
 		"ata_init": "./bin/init.js",
 		"ata_run": "./bin/run.js",
-		"ata_test": "./bin/test.js"
+		"ata_test": "./bin/test.js",
+		"ata_change": "./bin/change.js"
 	},
 	"keywords": [
 		"ata",

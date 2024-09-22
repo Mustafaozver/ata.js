@@ -54,41 +54,141 @@
 	
 	const Setup_Main = (project_path)=>{
 		const folders = [
-			"App",
+			"App", // başlatıcılar, modlar
 			//"Base",
-			"Config",
-			"Constant",
-			"Controller",
-			"Core",
-			//"DB",
-			//"Debug",
-			"Document",
-			//"Extension",
-			//"Interface",
-			//"Job",
-			//"Key",
-			"Library",
-			//"Locale",
-			//"Log",
-			//"Module",
-			//"Report",
+			"Config", // konfigürasyonlar
+			"Constant", // Sabit değerler
+			"Controller", // Controller
+			"Core", // Çekirdek işlemler
+			//"DB", // veri tabanı
+			//"Debug", // hata ayıklama
+			"Document", // dokümantasyon
+			//"Extension", // eklentiler
+			//"Interface", // harici arayüz
+			"Job", // thread, ayrı iş parçacıkları
+			//"Key", // lisanslar
+			"Library", // kütüphaneler
+			//"Locale", // yerelleştirme dosyaları
+			//"Log", // log kayıtları
+			//"Module", // modüller
+			//"Report", // raporlar
 			//"Resource",
-			"Service",
-			"Source",
-			//"Temp",
-			//"Templates",
-			"Test",
-			//"View",
+			"Service", // servisler
+			"Source", // kaynak dosyalar
+			//"Temp", // geçici dosyalar
+			//"Templates", // şablonlar
+			"Test", // testler
+			//"View", // grafiksel arayüz
 		];
-		const temp_main = ATA.Path.join(MWD, "./Templates/main");
 		folders.map((name)=>{
 			ATA.FS.mkdirSync(ATA.Path.join(project_path, name), {
 				recursive: true
 			});
 		});
+		const temp_main = ATA.Path.join(MWD, "./Templates/main");
 		ATA.FS.cpSync(temp_main, project_path, {
 			recursive: true
 		});
+	};
+	
+	const Setup_OS = async(project_path, package, me)=>{
+		console.log("Target OS : ");
+		console.log("L : Linux");
+		console.log("W : Windows");
+		console.log("O : Other");
+		const os = await GetEntry("L");
+		switch(os){
+			case"L":
+			case"l":
+				me.OS = "LINUX";
+				package.os = ["linux"];
+				const temp_linux = ATA.Path.join(MWD, "./Templates/linux");
+				ATA.FS.cpSync(temp_linux, project_path, {
+					recursive: true
+				});
+			break;
+			case"W":
+			case"w":
+				me.OS = "WIN";
+				package.os = ["win32"];
+				const temp_windows = ATA.Path.join(MWD, "./Templates/windows");
+				ATA.FS.cpSync(temp_windows, project_path, {
+					recursive: true
+				});
+			break;
+			case"O":
+			case"o":
+			default:
+				me.OS = "OTHER";
+				//package.os = ["win32"];
+			break;
+		}
+	};
+	
+	const ClearScreen = ()=>{
+		process.stdout.write('\u001B[2J\u001B[0;0f');
+	};
+	
+	const ClearLine = ()=>{
+		const CSI = '\u001B[';
+		process.stdout.write(CSI + 'A' + CSI + 'K');
+	};
+	
+	const GetScreenSize = ()=>{
+		return{
+			w: process.stdout.columns,
+			h: process.stdout.rows
+		};
+	};
+	
+	const SetCursorPosition = async(x, y)=>{
+		return await new Promise((resolve, reject)=>{
+			process.stdout.cursorTo(x, y, resolve);
+		});
+	};
+	
+	const SetProgressBar = (x=0, msg="")=>{
+		ClearLine();
+		let em = "░";
+		let fu = "█"
+		let text = "";
+		const limit = 40;
+		for(let i=0;i<limit;i++){
+			if((i/limit) > x) text += em;
+			else text += fu;
+		}
+		text += " " + (100*x).toFixed(2) + "% " + msg;
+		process.stdout.write(text + "\n");
+	};
+	
+	const DownLoadFile = async(url)=>{
+		const data = await new Promise((resolve, reject)=>{
+			const fileData = Path.parse(url);
+			const fileName = fileData.name + fileData.ext;
+			const outStream = FS.createWriteStream(fileName);
+			let received_bytes = 0;
+			let total_bytes;
+			Request.get(url)
+			.on("error", ()=>{
+				reject();
+			})
+			.on("response", (data)=>{
+				total_bytes = parseInt(data.headers["content-length"]);
+				SetProgressBar(0, "starting...");
+			})
+			.on("data", (data)=>{
+				received_bytes += data.length;
+				SetProgressBar(received_bytes/total_bytes, fileName + " downloading...");
+				//if(received_bytes == total_bytes)resolve(true);
+			})
+			.on("end", ()=>{
+				ClearLine();
+				process.stdout.write("> " + fileName + " downloaded.\n\n");
+				resolve(true);
+			})
+			.pipe(outStream);
+		});
+		return data;
 	};
 	
 	const ApplyTemplate = async(name, project_path, package, me)=>{
@@ -166,6 +266,19 @@
 			"node": ">=18.0.0",
 			"npm": ">=8.0.0",
 		};
+		/*package.repository = {
+			type: "git",
+			url: "git+https://github.com/npm/cli.git"
+		};*/
+		
+		/*package.funding ={
+			type: "individual",
+			url: "http://example.com/donate"
+		};*/
+		
+		//package.cpu = ["x64"];
+		
+		//package.private = true;
 		
 		me.Name = projectName;
 		me.Version = projectVersion;
@@ -176,6 +289,12 @@
 		me.Type = "PLAIN";
 		
 		Setup_Main(project_path);
+		
+		
+		
+		
+		
+		await Setup_OS(project_path, package, me);
 		
 		await ApplyTemplate("ELECTRON", project_path, package, me);
 		//await ApplyTemplate("REACT", project_path, package, me);
@@ -195,6 +314,7 @@
 	};
 	
 	ATA.Setups.push(()=>{
+		ClearScreen();
 		rl = RL.createInterface({
 			input: process.stdin,
 			output: process.stdout,
