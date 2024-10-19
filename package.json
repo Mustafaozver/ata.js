@@ -5,13 +5,9 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "npx mocha"
-		
 	},
 	"bin": {
-		"ata_init": "./bin/init.js",
-		"ata_run": "./bin/run.js",
-		"ata_test": "./bin/test.js",
-		"ata_change": "./bin/change.js"
+		"atajs": "./App/default.js"
 	},
 	"keywords": [
 		"ata",
@@ -26,11 +22,11 @@
 		"node": ">=13"
 	},
 	"devDependencies": {
-		"mocha":"10.2.0"
+		"mocha": "10.2.0"
 	},
 	"author": "Mustafa ÖZVER",
-	"license": "GPL-3.0-only"
+	"license": "GPL-3.0-only",
+	"dependencies": {
+		"commander": "^12.1.0"
+	}
 }
-
-
-

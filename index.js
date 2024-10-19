@@ -436,14 +436,6 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	ATA.Thread = require("./Thread.js");
 	
 	const SandBox = require("./SandBox.js");
-	const _class = class{
-		path = "";
-		constructor(){
-			
-		};
-	};
-	
-	Object.assign(ATA, require("./Classes.js")(_class));
 	
 	ATA.Inject = (name, obj={}, args=[])=>{
 		return SandBox.Require(name, obj, args);
