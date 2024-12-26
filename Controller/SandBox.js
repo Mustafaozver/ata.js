@@ -10,20 +10,22 @@ module.exports = ((ATA)=>{
 		SHARE[key + ""] = value;
 	};
 	
-	const ScopeRegister = (scope)=>{
-		scope[PrivateKey] = {
+	const ScopeController = (()=>{
+		const Class = class{
 			
 		};
-		return true;
-		Object.defineProperty(scope, "process", {
-			get: function(){
-				return process;
-			},
-			set: function(value){
-				
-			}
+		
+		return Class;
+	})();
+	
+	const ScopeRegister = (scope)=>{
+		const scopec = new ScopeController({
+			scope,
 		});
 		
+		scope[PrivateKey] = scopec;
+		
+		return scopec;
 	};
 	
 	const ScopeCheck = (scope)=>{

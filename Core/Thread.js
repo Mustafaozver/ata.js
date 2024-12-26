@@ -3,23 +3,32 @@ module.exports = ((ATA)=>{
 	const datapool = {};
 	const stack = {};
 	var count = 0;
+	
 	ATA.SetVariable = (key, value)=>{
 		datapool["" + key] = value;
 	};
+	
 	ATA.GetVariable = (key)=>{
 		return datapool["" + key];
 	};
+	
 	const Thread = class{
-		OnMessage = function(msg){};
-		OnExit = function(){};
-		OnError = function(){};
+		OnMessage = null;
+		OnExit = null;
+		OnError = null;
 		__updatetime = 0;
 		ID = "";
+		
 		constructor(){
 			this.ID = "TH_" + (count++);
 			this.Create();
 			stack[this.ID] = this;
+			
+			this.OnMessage = function(msg){};
+			this.OnExit = function(){};
+			this.OnError = function(){};
 		};
+		
 		Create(){
 			var THAT = this;
 			this.__updatetime = (new Date()).getTime();
@@ -57,20 +66,25 @@ module.exports = ((ATA)=>{
 				THAT.HeartBeat();
 			}]);
 		};
+		
 		HeartBeat(){
 			this.__updatetime = (new Date()).getTime();
 		};
+		
 		Check(){
 			if(((new Date()).getTime() - this.__updatetime) > 60000){
 				this.OnError();
 			}
 		};
+		
 		Terminate(){
 			this._WW.terminate();
 		};
+		
 		InjectData(key, value){
 			this.Run("(function(ATA,key,value){ATA.SetVariable(key,value);})(ATA()," + JSON.stringify(key) + "," + JSON.stringify(value) + ");");
 		};
+		
 		Run(code, args=[]){
 			code = "(" + code + ")(" + args.map(JSON.stringify).join(",") + ")";
 			var ID = "1";
@@ -85,10 +99,12 @@ module.exports = ((ATA)=>{
 			});
 		};
 	};
+	
 	ATA.Loops.push(()=>{
 		for(var key in stack){
 			stack[key].Check();
 		}
 	});
+	
 	return Thread;
 })(ATA());

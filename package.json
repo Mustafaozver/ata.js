@@ -1,13 +1,34 @@
 {
-	"name": "ata.js",
+	"name": "ata.js2",
 	"version": "9.0.5",
 	"description": "ATA.js is a programmatic life cycle system for Javascript and typescript.",
-	"main": "index.js",
+	"main": "./App/Main.js",
 	"scripts": {
 		"test": "npx mocha"
 	},
 	"bin": {
-		"atajs": "./App/default.js"
+		"ata.init": "./App/Initialize.js",
+		"ata.run": "./App/Run.js",
+		"ata.test": "./App/Test.js",
+		"ata.add": "./App/Add.js",
+		"ata.dev": "./App/Development.js",
+		"ata.update": "./App/Update.js",
+		"ata.upgrade": "./App/Upgrade.js",
+		
+		
+		
+		
+		
+		"ata.remove": "./App/Remove.js",
+		"ata.clean": "./App/Clean.js",
+		"ata.change": "./App/Change.js",
+		"ata.build": "./App/Build.js",
+		"ata.publish": "./App/Publish.js",
+		"ata.install": "./App/Install.js",
+		"ata.uninstall": "./App/Uninstall.js",
+		"ata.help": "./App/Help.js",
+		"ata.version": "./App/Version.js",
+		"ata.license": "./App/License.js"
 	},
 	"keywords": [
 		"ata",
@@ -19,10 +40,12 @@
 		"url": "https://github.com/Mustafaozver/ata.js.git"
 	},
 	"engines": {
-		"node": ">=13"
+		"node": ">=18.0.0",
+		"npm": ">=8.0.0"
 	},
 	"devDependencies": {
-		"mocha": "10.2.0"
+		"mocha": "10.2.0",
+		"nodemon": "^2.0.22"
 	},
 	"author": "Mustafa ÖZVER",
 	"license": "GPL-3.0-only",

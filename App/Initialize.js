@@ -2,16 +2,36 @@
 
 ((ATA)=>{
 	const RL = ATA.Require("node:readline");
-	const CP = require("node:child_process");
+	const CP = ATA.Require("node:child_process");
 	const CWD = ATA.CWD;
 	const MWD = ATA.MWD;
-	
-	const atajs_package = ATA.Require(ATA.Path.join(MWD, "./package.json"));
 	
 	const no_regex = /^(((H|h)+(a)*(y)*(ı)*(r)*)|((N|n)+(o)*))$/i;
 	const ye_regex = /^(((E|e)+(v)*(e)*(t)*)|((Y|y)+(e)*(s)*))$/i;
 	
 	let rl = null;
+	
+	process["__MODE"] = "INITIALIZE";
+	
+	const atajs_package = ATA.Require("./package.json");
+	
+	const { extendedProject } = ATA.Require("./Core/Main.js");
+	
+	const ClearScreen = ()=>{
+		process.stdout.write('\u001B[2J\u001B[0;0f');
+	};
+	
+	const ClearLine = ()=>{
+		const CSI = '\u001B[';
+		process.stdout.write(CSI + 'A' + CSI + 'K');
+	};
+	
+	const GetScreenSize = ()=>{
+		return{
+			w: process.stdout.columns,
+			h: process.stdout.rows
+		};
+	};
 	
 	const JSON_stringify = (object)=>{
 		const replacer = (key, value)=>{
@@ -52,42 +72,19 @@
 		});
 	};
 	
-	const Setup_Main = (project_path)=>{
-		const folders = [
-			"App", // başlatıcılar, modlar
-			//"Base",
-			"Config", // konfigürasyonlar
-			"Constant", // Sabit değerler
-			"Controller", // Controller
-			"Core", // Çekirdek işlemler
-			//"DB", // veri tabanı
-			//"Debug", // hata ayıklama
-			"Document", // dokümantasyon
-			//"Extension", // eklentiler
-			//"Interface", // harici arayüz
-			"Job", // thread, ayrı iş parçacıkları
-			//"Key", // lisanslar
-			"Library", // kütüphaneler
-			//"Locale", // yerelleştirme dosyaları
-			//"Log", // log kayıtları
-			//"Module", // modüller
-			//"Report", // raporlar
-			//"Resource",
-			"Service", // servisler
-			"Source", // kaynak dosyalar
-			//"Temp", // geçici dosyalar
-			//"Templates", // şablonlar
-			"Test", // testler
-			//"View", // grafiksel arayüz
-		];
-		folders.map((name)=>{
-			ATA.FS.mkdirSync(ATA.Path.join(project_path, name), {
+	const ApplyTemplate = async(name, project_path, package, me)=>{
+		const template = ATA.Require(ATA.Path.join(MWD, "./Library/Build/", name + ".js"));
+		return await template(project_path, package, me);
+	};
+	
+	const Setup_Main = (project_path, package, me)=>{
+		Object.keys(ANA.System.Class).map((key)=>{
+			const Class = ANA.System.Class[key];
+			me.Build[key] = {};
+			const obj = new Class({name:"."});
+			ATA.FS.mkdirSync(ATA.Path.join(project_path, obj.Path), {
 				recursive: true
 			});
-		});
-		const temp_main = ATA.Path.join(MWD, "./Templates/main");
-		ATA.FS.cpSync(temp_main, project_path, {
-			recursive: true
 		});
 	};
 	
@@ -125,105 +122,32 @@
 		}
 	};
 	
-	const ClearScreen = ()=>{
-		process.stdout.write('\u001B[2J\u001B[0;0f');
-	};
-	
-	const ClearLine = ()=>{
-		const CSI = '\u001B[';
-		process.stdout.write(CSI + 'A' + CSI + 'K');
-	};
-	
-	const GetScreenSize = ()=>{
-		return{
-			w: process.stdout.columns,
-			h: process.stdout.rows
-		};
-	};
-	
-	const SetCursorPosition = async(x, y)=>{
-		return await new Promise((resolve, reject)=>{
-			process.stdout.cursorTo(x, y, resolve);
-		});
-	};
-	
-	const SetProgressBar = (x=0, msg="")=>{
-		ClearLine();
-		let em = "░";
-		let fu = "█"
-		let text = "";
-		const limit = 40;
-		for(let i=0;i<limit;i++){
-			if((i/limit) > x) text += em;
-			else text += fu;
-		}
-		text += " " + (100*x).toFixed(2) + "% " + msg;
-		process.stdout.write(text + "\n");
-	};
-	
-	const DownLoadFile = async(url)=>{
-		const data = await new Promise((resolve, reject)=>{
-			const fileData = Path.parse(url);
-			const fileName = fileData.name + fileData.ext;
-			const outStream = FS.createWriteStream(fileName);
-			let received_bytes = 0;
-			let total_bytes;
-			Request.get(url)
-			.on("error", ()=>{
-				reject();
-			})
-			.on("response", (data)=>{
-				total_bytes = parseInt(data.headers["content-length"]);
-				SetProgressBar(0, "starting...");
-			})
-			.on("data", (data)=>{
-				received_bytes += data.length;
-				SetProgressBar(received_bytes/total_bytes, fileName + " downloading...");
-				//if(received_bytes == total_bytes)resolve(true);
-			})
-			.on("end", ()=>{
-				ClearLine();
-				process.stdout.write("> " + fileName + " downloaded.\n\n");
-				resolve(true);
-			})
-			.pipe(outStream);
-		});
-		return data;
-	};
-	
-	const ApplyTemplate = async(name, project_path, package, me)=>{
-		const template = ATA.Require(ATA.Path.join(MWD, "./Collection/", name + ".js"));
-		return await template(project_path, package, me);
-	};
-	
-	const Question = async(msg="")=>{
-		while(true){
-			console.log(msg + " [Y/N] ? ");
-			const answer = await GetEntry();
-			if(ye_regex.test(answer))return true;
-			else if(no_regex.test(answer))return false;
-			//return 2;
-			console.log("");
-		}
-	};
-	
 	const Setup = async()=>{
 		console.log("Project Name : ");
 		const projectName = await GetEntry("atajs-example-project");
 		
-		const project_path = ATA.Path.join(CWD, projectName);
+		const project_path = ATA.Path.join(CWD/*, projectName*/);
 		
+		/*
 		ATA.FS.mkdirSync(project_path, {
 			recursive: true
 		});
+		*/
 		
 		const package_path = ATA.Path.join(project_path, "./package.json");
-		const me_path = ATA.Path.join(project_path, "./me.json");
+		const me_path = ATA.Path.join(project_path, "./Config/M.json");
 		const package = {};
 		const me = {};
 		
 		console.log("Project Version : ");
-		const projectVersion = await GetEntry("1.0.0");
+		const projectVersion = await Promise.all([
+			parseInt(await GetEntry("1")),
+			parseInt(await GetEntry("0")),
+			parseInt(await GetEntry("0")),
+			parseInt(await GetEntry("0")),
+			parseInt(await GetEntry("1")),
+			await GetEntry("BETA"),
+		]);
 		
 		console.log("Project Description : ");
 		const projectDescription = await GetEntry("a program");
@@ -233,18 +157,18 @@
 		console.log("Project Author : ");
 		const projectAuthor = await GetEntry("Anonymous");
 		
+		//
 		
 		package.name = projectName;
-		package.version = projectVersion;
+		package.version = projectVersion.slice(0, 3).join(".");
 		package.description = projectDescription;
 		
 		package.keywords = [];
 		package.main = "./App/Main.js";
 		package.license = projectLicense;
 		package.scripts = {
-			//"start": "npx electron ./App/Electron.js",
-			//"serve": "node ./App/Main.JS serve",
-			"test": "nodemon ./App/Test.JS"
+			"test": "npx ata.test",
+			"start": "npx ata.run",
 		};
 		package.dependencies = {
 			"ata.js": atajs_package.version,
@@ -285,14 +209,10 @@
 		me.Description = projectDescription;
 		me.Author = projectAuthor;
 		me.License = projectLicense;
-		me.Library = {};
+		me.Build = {};
 		me.Type = "PLAIN";
 		
-		Setup_Main(project_path);
-		
-		
-		
-		
+		Setup_Main(project_path, package, me);
 		
 		await Setup_OS(project_path, package, me);
 		
@@ -306,12 +226,12 @@
 		ATA.FS.writeFileSync(package_path, JSON_stringify(package), "UTF8");
 		ATA.FS.writeFileSync(me_path, JSON_stringify(me), "UTF8");
 		
-		await Run_Command("npm install", project_path);
+		//await Run_Command("npm install", project_path);
 		//await Run_Command("konsole", project_path);
-		
 		
 		Exit();
 	};
+	
 	
 	ATA.Setups.push(()=>{
 		ClearScreen();
@@ -324,4 +244,4 @@
 		}, 10);
 	});
 	
-})(require("../index.js")());
+})(require("../Core/Ata.js")());
