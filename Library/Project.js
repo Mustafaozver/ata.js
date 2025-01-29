@@ -17,7 +17,7 @@ module.exports=(()=>{
 			constructor(class__) {
 				this[class_] = class__;
 			};
-			Add(name){
+			Add(name, config={}){
 				const obj = new this[class_](config);
 				this[arr_][name+""] = obj;
 				return obj;
@@ -33,26 +33,47 @@ module.exports=(()=>{
 		return Class;
 	})();
 	
-	const Class = class{
-		constructor(){
-			
+	const Class = (()=>{
+		const Class = class{
+			constructor(){
+				
+			};
+			toString(){
+				return"[PROJECT OBJECT]";
+			};
+			valueOf(){
+				return this.toString();
+			};
+			Serialize(){
+				return{};
+			};
 		};
-		toString(){
-			return"[PROJECT OBJECT]";
-		};
-		valueOf(){
-			return this.toString();
-		};
-		Serialize(){
-			return{};
-		};
-	};
+		
+		return Class;
+	})();
 	
-	const Project = class{
-		constructor(){
+	const Project = (()=>{
+		const path = Symbol();
+		const name = Symbol();
+		const Class = class{
+			[path] = "";
+			[name] = "";
+			constructor(config={}){
+				this[name] = config.Name;
+				this[path] = config.Path;
+			};
 			
+			get Path(){
+				return this[path];
+			};
+			
+			get Name(){
+				return this[name];
+			};
 		};
-	};
+		
+		return Class;
+	})();
 	
 	return{
 		Class,

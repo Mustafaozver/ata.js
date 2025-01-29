@@ -1,6 +1,11 @@
 module.exports=((ATA)=>{
 	
 	const { Class, Project, Stack } = ATA.Require("./Library/Project.js");
+	const { RunJS, RunTS, Require } = ATA.SandBox;
+	
+	console.log({
+		RunJS, RunTS, Require
+	});
 	
 	ANA.System = {
 		Class:{},
@@ -20,6 +25,7 @@ module.exports=((ATA)=>{
 		
 		const isReady = Symbol();
 		const promise = Symbol();
+		const project = Symbol();
 		const name = Symbol();
 		const path = Symbol();
 		
@@ -27,15 +33,17 @@ module.exports=((ATA)=>{
 			ATA = ATA;
 			[isReady] = false;
 			[promise] = null;
+			[project] = null;
 			[name] = "";
 			[path] = "";
 			Initialize = null;
 			
 			constructor(config){
 				super(config);
-				this[name] = config.name;
-				this[path] = config.path;
+				this[name] = config.Name;
+				this[path] = config.Path;
 				this[promise] = CreatePromise();
+				this[project] = config.project;
 				this[isReady] = false;
 				this.Initialize = async()=>{};
 			};
@@ -46,6 +54,45 @@ module.exports=((ATA)=>{
 			
 			get Path(){
 				return ATA.Path.join(/*ATA.CWD, */this[path], this[name]);
+			};
+			
+			get Content(){
+				return ATA.FS.readFileSync(this.Path, {
+					"encoding": "utf8",
+					//"flag": "r",
+					//"mode": 0o666,
+					//"autoClose": true,
+				});
+			};
+			
+			get Promise(){
+				return this[promise];
+			};
+			
+			LoadRoot(obj={}){
+				return RunJS(this.Content, {
+					Module: this,
+					RunJS,
+					RunTS,
+					Require,
+					OK: this[promise].resolve,
+					NO: this[promise].reject,
+					//ATA,
+					...obj,
+				}, []);
+			};
+			
+			LoadSandBox(obj={}){
+				return RunJS(this.Content, {
+					Module: this,
+					RunJS,
+					RunTS,
+					Require,
+					OK: this[promise].resolve,
+					NO: this[promise].reject,
+					ATA,
+					...obj,
+				}, []);
 			};
 		};
 		

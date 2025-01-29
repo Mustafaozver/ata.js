@@ -81,7 +81,7 @@
 		Object.keys(ANA.System.Class).map((key)=>{
 			const Class = ANA.System.Class[key];
 			me.Build[key] = {};
-			const obj = new Class({name:"."});
+			const obj = new Class({name:".", project: true});
 			ATA.FS.mkdirSync(ATA.Path.join(project_path, obj.Path), {
 				recursive: true
 			});

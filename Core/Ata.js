@@ -219,16 +219,43 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 		
 		ULID:{
 			Generate:function(){
-				const len = 16;
-				const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
-				while(true){
-					let text = "_";
-					for(let i=0;i<len;i++)text += chars.charAt(Math.floor(chars.length*Math.random()));
-					if(!this.varIDs[text]){
-						this.varIDs[text] = true;
-						return text;
-					}
-				}
+				let now = Date.now();
+				const alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+				const generateRandomChar = () => alphabet[Math.floor(Math.random() * alphabet.length)];
+				
+				const timePart = now.toString(36).toUpperCase();
+				const randomPart = Array.from({
+					length: 16
+				}, generateRandomChar).join("");
+				
+				return timePart.padStart(10, "0") + randomPart;
+			},
+		},
+		
+		MID:{
+			Generate:function(subH=0, subL=0){
+				const GenerateRandom = (b=36)=>{
+					return Math.floor(Math.random() * b).toString(b);
+				};
+				
+				const nHChar = 3;
+				const nLChar = 7;
+				
+				const subHMax = 36 ** nHChar - 1;
+				const subLMax = 36 ** nLChar - 1;
+				
+				const subHMin = 36** (nHChar - 1);
+				const subLMin = 36** (nLChar - 1);
+				
+				const subTime = Date.now();
+				
+				const timePart = subTime.toString(36);
+				const randPart = Array(15 - timePart.length).fill(36).map(GenerateRandom).join("");
+				
+				const subHPart = Math.min(Math.max(subH, subHMin), subHMax).toString(36);
+				const subLPart = Math.min(Math.max(subL, subLMin), subLMax).toString(36);
+				
+				return ("MIDSH" + subHPart + "SL" + subLPart + "TS" + timePart + "RN" + randPart + "FO").toUpperCase();
 			},
 		},
 		
@@ -472,11 +499,7 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	
 	ATA.Thread = require("./Thread.js");
 	
-	const SandBox = require("./SandBox.js");
-	
-	ATA.Inject = (name, obj={}, args=[])=>{
-		return SandBox.Require(name, obj, args);
-	};
+	ATA.SandBox = require("./SandBox.js");
 	
 })((function(){return this})());
 else throw new Error("ATA is already called.");

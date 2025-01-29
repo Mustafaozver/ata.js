@@ -1,5 +1,5 @@
 module.exports = ((ATA)=>{
-	const wt = ATA.Require("child_process");
+	const wt = ATA.Require("node:child_process");
 	const datapool = {};
 	const stack = {};
 	var count = 0;
@@ -33,17 +33,20 @@ module.exports = ((ATA)=>{
 			var THAT = this;
 			this.__updatetime = (new Date()).getTime();
 			
-			this._WW = wt.fork("./ata.wt.js");
+			this._WW = wt.fork("./Ata.wt.js");
 			var addlistener = this._WW.addListener || this._WW.addEventListener || this._WW.on;
+			
 			addlistener.apply(this._WW, ["message", async function(){
 				THAT.OnMessage.apply(THAT,[...arguments]);
 				THAT.HeartBeat();
 			}]);
-			addlistener.apply(this._WW, ["error", function(){
+			
+			addlistener.apply(this._WW, ["error", async function(){
 				THAT.OnError.apply(THAT,[...arguments]);
 				THAT.HeartBeat();
 			}]);
-			addlistener.apply(this._WW, ["exit", function(){
+			
+			addlistener.apply(this._WW, ["exit", async function(){
 				THAT.OnExit.apply(THAT,[...arguments]);
 				THAT.HeartBeat();
 			}]);
@@ -51,7 +54,7 @@ module.exports = ((ATA)=>{
 			
 			
 			return;
-			this._WW = new wt.Worker("./src/ata.wt.js");
+			this._WW = new wt.Worker("./Ata.wt.js");
 			var addlistener = this._WW.addListener || this._WW.addEventListener;
 			addlistener.apply(this._WW, ["message", async function(){
 				THAT.OnMessage.apply(THAT,[...arguments]);
