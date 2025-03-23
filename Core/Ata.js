@@ -152,15 +152,33 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 		const lastPivotTime = lasttime % period;
 		return(PivotTime < lastPivotTime);
 	};
-	const _require = (modnames)=>{
-		for(let n=0;n<modnames.length;n++){
-			try{
-				return require(modnames[n]);
-			}catch(e){}
-		}
-		throw new Error("Module is not loaded.");
-		return false;
+	const MakeASync = async(func, args=[])=>{
+		return await func(...args);
 	};
+	const RunInTime = async(func, timeout=10000)=>{
+		return await new Promise((resolve, reject) => {
+			MakeASync(func).then(resolve).catch(reject);
+			setTimeout(reject, timeout);
+		});
+	};
+	const TryerASync = async(arr=[], timeout=10000)=>{
+		return await new Promise(async(resolve, reject)=>{
+			const resp = [];
+			let index = 0;
+			while(index < arr.length){
+				try{
+					const result = await RunInTime(arr[index]);
+					resp.unshift(result);
+					return resolve(resp);
+				}catch(e){
+					resp.unshift(e);
+					index++;
+				}
+			}
+			return reject(resp);
+		});
+	};
+	
 	var ATA = function(){};
 	Object.assign(ATA.prototype,{
 		LoopTime:1000,
@@ -189,6 +207,8 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	});*/
 	var ANA = ATA;
 	var ATA = new ATA();
+	
+	require("./Adapter.js")(ATA, ANA, GLOBAL);
 	
 	Object.assign(ATA,{
 		LastActivite:0,
@@ -319,22 +339,6 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 		isMaster	: false,
 	});
 	
-	ATA.__reqs = {};
-	
-	ATA.Require = (name)=>{ // root
-		try{
-			if(ATA.__reqs[name])return ATA.__reqs[name];
-			const module = _require([
-				"node:" + name,
-				ATA.Path.join(ATA.CWD, "" + name),
-				ATA.Path.join(ATA.MWD, "" + name),
-				name
-			]);
-			return(ATA.__reqs[name] = module);
-		}catch(e){
-			console.log("Module " + name + " is missing or corrupted.", e);
-		}
-	};
 	ATA.GLOBAL = GLOBAL;
 	//GLOBAL.ATA = ATA;
 	ATA.Settings.ID = "ATAVX_" + ATA.UUID.Generate();
@@ -342,69 +346,6 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	GLOBAL.VERSION = ATA.Version;
 	GLOBAL.DESCRIPTION = ATA.Description;
 	GLOBAL.COPYRIGHT = ATA.CopyRight;
-	
-	//
-	const process = GLOBAL.process;
-	const global = GLOBAL.global;
-	
-	const setTimeout = GLOBAL.setTimeout;
-	const setInterval = GLOBAL.setInterval;
-	const setImmediate = GLOBAL.setImmediate;
-	
-	const clearTimeout = GLOBAL.clearTimeout;
-	const clearInterval = GLOBAL.clearInterval;
-	const clearImmediate = GLOBAL.clearImmediate;
-	
-	const queueMicrotask = GLOBAL.queueMicrotask;
-	const structuredClone = GLOBAL.structuredClone;
-	const atob = GLOBAL.atob;
-	const btoa = GLOBAL.btoa;
-	const performance = GLOBAL.performance;
-	const fetch = GLOBAL.fetch;
-	const NAME = GLOBAL.NAME;
-	const VERSION = GLOBAL.VERSION;
-	const DESCRIPTION = GLOBAL.DESCRIPTION;
-	const COPYRIGHT = GLOBAL.COPYRIGHT;
-	
-	//
-	//GLOBAL.global = null;
-	//GLOBAL.process = ()=>{return process;};
-	//GLOBAL.queueMicrotask = null;
-	//GLOBAL.clearImmediate = null;
-	//GLOBAL.setImmediate = null;
-	//GLOBAL.structuredClone = null;
-	//GLOBAL.clearInterval = null;
-	//GLOBAL.clearTimeout = null;
-	//GLOBAL.setInterval = null;
-	//GLOBAL.setTimeout = null;
-	//GLOBAL.atob = null;
-	//GLOBAL.btoa = null;
-	//GLOBAL.performance = null;
-	//GLOBAL.fetch = null;
-	
-	////GLOBAL.Exit = null;
-	////GLOBAL.ATA = null;
-	////GLOBAL.ANA = null;
-	
-	//
-	//GLOBAL.global = null;
-	//GLOBAL.process = ()=>{return process;};
-	//GLOBAL.queueMicrotask = null;
-	//GLOBAL.clearImmediate = null;
-	//GLOBAL.setImmediate = null;
-	//GLOBAL.structuredClone = null;
-	//GLOBAL.clearInterval = null;
-	//GLOBAL.clearTimeout = null;
-	//GLOBAL.setInterval = null;
-	//GLOBAL.setTimeout = null;
-	//GLOBAL.atob = null;
-	//GLOBAL.btoa = null;
-	//GLOBAL.performance = null;
-	//GLOBAL.fetch = null;
-	
-	////GLOBAL.Exit = null;
-	////GLOBAL.ATA = null;
-	////GLOBAL.ANA = null;
 	
 	ATA.OnMessage = function(e){
 		if(e.data.EVAL){
@@ -432,20 +373,6 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 			}
 		}
 	};
-	
-	process.on("unhandledRejection", function(err){
-		console.log("UnHandled Rejection => ", err.toString(), "\n", err);
-		//process.exit();
-	});
-	
-	process.on("uncaughtException", function (err) {
-		console.log("Caught Exception => ", err.toString(), "\n", err);
-		//process.exit();
-	});
-	
-	process.on("message", async(data)=>{
-		ATA.OnMessage({data});
-	});
 	
 	ATA.SendMessage = (msg)=>{
 		process.send(msg);
@@ -476,29 +403,18 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	
 	ATA.waitUntil = waitUntil;
 	ATA.isTimeCycled = isTimeCycled;
+	ATA.MakeASync = MakeASync;
+	ATA.RunInTime = RunInTime;
+	ATA.TryerASync = TryerASync;
 	ATA.DoFinalize = DoFinalize;
 	ATA.FormatTime = FormatTime;
 	ATA.DecodeObject = DecodeObject;
-	
-	ATA.CWD = process.cwd();
-	ATA.Path = require("path");
-	ATA.FS = require("fs");
-	ATA.MWD = ATA.Path.join(__dirname, "/../");
-	
-	GLOBAL["ATA"] = function(){
-		return ATA;
-	};
-	
-	GLOBAL["ANA"] = function(){
-		return ANA;
-	};
 	
 	module.exports = ()=>{
 		return ATA;
 	};
 	
 	ATA.Thread = require("./Thread.js");
-	
 	ATA.SandBox = require("./SandBox.js");
 	
 })((function(){return this})());

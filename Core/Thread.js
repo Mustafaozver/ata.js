@@ -1,5 +1,5 @@
 module.exports = ((ATA)=>{
-	const wt = ATA.Require("node:child_process");
+	const wt = require("node:child_process");
 	const datapool = {};
 	const stack = {};
 	var count = 0;

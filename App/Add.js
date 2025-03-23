@@ -13,9 +13,30 @@
 	
 	process["__MODE"] = "ADD";
 	
-	const atajs_package = ATA.Require("./package.json");
+	const packageJSON = ATA.Require(ATA.Path.join(ATA.CWD, "./package.json"));
+	const MJSON = ATA.Require(ATA.Path.join(ATA.CWD, "./Config/M.json"));
+	const packageJSON_ATA = ATA.Require(ATA.Path.join(ATA.MWD, "./package.json"));
 	
-	const Main = ATA.Require("./Core/Main.js");
 	
+	const {
+		extendedProject,
+		Version,
+	} = ATA.Require("./Core/Main.js");
+	
+	const project = new extendedProject({
+		Name: MJSON.Name,
+		Path: ATA.Path.join(ATA.CWD, "./"),
+	});
+	
+	project.Version = new Version(MJSON.Version);
+	
+	console.log({
+		//packageJSON,
+		//packageJSON_ATA,
+		MJSON,
+		//project,
+		//LO: project.Path,
+		//LN: project.Name,
+	});
 	
 })(require("../Core/Ata.js")());

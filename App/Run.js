@@ -17,23 +17,28 @@
 	const MJSON = ATA.Require(ATA.Path.join(ATA.CWD, "./Config/M.json"));
 	const packageJSON_ATA = ATA.Require(ATA.Path.join(ATA.MWD, "./package.json"));
 	
-	
 	const {
 		extendedProject,
-	} = ATA.Require("./Core/Main.js");
+	} = ATA.Require(ATA.Path.join(ATA.MWD, "./Core/Main.js"));
+	
+	const Environment = {
+		
+	};
 	
 	const project = new extendedProject({
-		Name: MJSON.Name,
+		...MJSON,
 		Path: ATA.Path.join(ATA.CWD, "./"),
+		Environment,
 	});
 	
-	console.log({
-		//packageJSON,
-		//packageJSON_ATA,
-		//MJSON,
-		project,
-		LO: project.Path,
-		LN: project.Name,
+	const mod = project.Mod.Add("Run", {
+		Name: "Run.json",
+		//Path: "./Mod/Run.json",
 	});
+	
+	project.Execute("Run");
+	
+	const data = project.Constant.Get("Default").LoadRoot();
+	
 	
 })(require("../Core/Ata.js")());

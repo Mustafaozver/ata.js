@@ -33,133 +33,148 @@ module.exports = ((ATA)=>{
 		else return false;
 	};
 	
+	const globalFix = (()=>{
+		const fix = {};
+		
+		fix.setTimeout = (func=()=>{}, time=1)=>{
+			return setTimeout(()=>{
+				func();
+			}, time);
+		};
+		
+		fix.OnError = (err)=>{
+			console.warn(err);
+			throw err;
+		};
+		
+		return fix;
+	})();
+	
 	const GenerateDefault = (obj, log=()=>{})=>{
 		const globals = {
 			_:true,
 			// İşletim Sistemi ve Çevresel Değişkenlere Erişim
-			"process": null,
-			"os": null,
-			"path": null,
-			"child_process": null,
-			"fs": null,
+			"process": undefined,
+			"os": undefined,
+			"path": undefined,
+			"child_process": undefined,
+			"fs": undefined,
 			
 			// Dinamik Kod Çalıştırma ve Zamanlayıcı Fonksiyonlar
-			"eval": null,
-			"Function": null,
-			"setTimeout": null,
-			"setInterval": null,
-			"setImmediate": null,
-			"clearTimeout": null,
-			"clearInterval": null,
-			"clearImmediate": null,
-			
-			// Kullanıcı Tanımlı Global Nesneler
-			"ATA": null,
-			"ANA": null,
+			"eval": undefined,
+			"Function": undefined,
+			"setTimeout": undefined,
+			"setInterval": undefined,
+			"setImmediate": undefined,
+			"clearTimeout": undefined,
+			"clearInterval": undefined,
+			"clearImmediate": undefined,
 			
 			// Global ve Belge Nesnesine Erişim
-			"global": null,
-			"globalThis": null,
-			"parent": null,
-			"window": null,
-			"document": null,
-			"self": null,
-			"top": null,
-			"frames": null,
-			"frameElement": null,
+			"global": undefined,
+			"globalThis": undefined,
+			"parent": undefined,
+			"window": undefined,
+			"document": undefined,
+			"self": undefined,
+			"top": undefined,
+			"frames": undefined,
+			"frameElement": undefined,
 			
 			// Ağ İletişimi ve Veri Depolama
-			"navigator": null,
-			"location": null,
-			"origin": null,
-			"external": null,
-			"fetch": null,
-			"XMLHttpRequest": null,
-			"WebSocket": null,
-			"localStorage": null,
-			"sessionStorage": null,
-			"indexedDB": null,
-			"cookieStore": null,
+			"navigator": undefined,
+			"location": undefined,
+			"origin": undefined,
+			"external": undefined,
+			"fetch": undefined,
+			"XMLHttpRequest": undefined,
+			"WebSocket": undefined,
+			"localStorage": undefined,
+			"sessionStorage": undefined,
+			"indexedDB": undefined,
+			"cookieStore": undefined,
 			
 			// Kriptografik İşlemler ve Güvenlik
-			"crypto": null,
+			"crypto": undefined,
 			
 			// Kullanıcı Etkileşimleri
-			"alert": null,
-			"prompt": null,
-			"confirm": null,
-			"console": null,
+			"alert": undefined,
+			"prompt": undefined,
+			"confirm": undefined,
+			"console": undefined,
 			
 			// Modül Sistemi ve Dosya Yol Bilgileri
-			"require": null,
-			"module": null,
-			"exports": null,
-			"__dirname": null,
-			"__filename": null,
+			"require": undefined,
+			"module": undefined,
+			"exports": undefined,
+			"__dirname": undefined,
+			"__filename": undefined,
 			
 			// Tarayıcı ve Node.js Özel Nesneleri
-			"Buffer": null,
+			"Buffer": undefined,
 			
 			// Tarayıcı Fonksiyonları ve Nesneleri
-			"onerror": null,
-			"atob": null,
-			"blur": null,
-			"btoa": null,
-			"cancelAnimationFrame": null,
-			"cancelIdleCallback": null,
-			"captureEvents": null,
-			"close": null,
-			"createImageBitmap": null,
-			"find": null,
-			"focus": null,
-			"getComputedStyle": null,
-			"getSelection": null,
-			"matchMedia": null,
-			"moveBy": null,
-			"moveTo": null,
-			"open": null,
-			"postMessage": null,
-			"print": null,
-			"queueMicrotask": null,
-			"releaseEvents": null,
-			"reportError": null,
-			"requestAnimationFrame": null,
-			"requestIdleCallback": null,
-			"resizeBy": null,
-			"resizeTo": null,
-			"scroll": null,
-			"scrollBy": null,
-			"scrollTo": null,
-			"stop": null,
-			"structuredClone": null,
-			"webkitCancelAnimationFrame": null,
-			"webkitRequestAnimationFrame": null,
-			"getScreenDetails": null,
-			"openDatabase": null,
-			"queryLocalFonts": null,
-			"showDirectoryPicker": null,
-			"showOpenFilePicker": null,
-			"showSaveFilePicker": null,
-			"webkitRequestFileSystem": null,
-			"webkitResolveLocalFileSystemURL": null,
+			"onerror": undefined,
+			"atob": undefined,
+			"blur": undefined,
+			"btoa": undefined,
+			"cancelAnimationFrame": undefined,
+			"cancelIdleCallback": undefined,
+			"captureEvents": undefined,
+			"close": undefined,
+			"createImageBitmap": undefined,
+			"find": undefined,
+			"focus": undefined,
+			"getComputedStyle": undefined,
+			"getSelection": undefined,
+			"matchMedia": undefined,
+			"moveBy": undefined,
+			"moveTo": undefined,
+			"open": undefined,
+			"postMessage": undefined,
+			"print": undefined,
+			"queueMicrotask": undefined,
+			"releaseEvents": undefined,
+			"reportError": undefined,
+			"requestAnimationFrame": undefined,
+			"requestIdleCallback": undefined,
+			"resizeBy": undefined,
+			"resizeTo": undefined,
+			"scroll": undefined,
+			"scrollBy": undefined,
+			"scrollTo": undefined,
+			"stop": undefined,
+			"structuredClone": undefined,
+			"webkitCancelAnimationFrame": undefined,
+			"webkitRequestAnimationFrame": undefined,
+			"getScreenDetails": undefined,
+			"openDatabase": undefined,
+			"queryLocalFonts": undefined,
+			"showDirectoryPicker": undefined,
+			"showOpenFilePicker": undefined,
+			"showSaveFilePicker": undefined,
+			"webkitRequestFileSystem": undefined,
+			"webkitResolveLocalFileSystemURL": undefined,
 			
 			// Fetch API ve İlgili Nesneler
-			"fetch": null,
-			"blinkfetch": null,
-			"blinkResponse": null,
-			"blinkFormData": null,
-			"blinkRequest": null,
-			"blinkHeaders": null,
-			"Response": null,
-			"FormData": null,
-			"Request": null,
-			"Headers": null,
+			"fetch": undefined,
+			"blinkfetch": undefined,
+			"blinkResponse": undefined,
+			"blinkFormData": undefined,
+			"blinkRequest": undefined,
+			"blinkHeaders": undefined,
+			"Response": undefined,
+			"FormData": undefined,
+			"Request": undefined,
+			"Headers": undefined,
 			
 			// external
-			"Exit": null,
+			"Exit": undefined,
 			
 			_GetParam,
 			_SetParam,
+			
+			...globalFix,
 			
 			...obj,
 		};
@@ -241,8 +256,10 @@ module.exports = ((ATA)=>{
 	const RunJS = (code="", obj={}, args=[])=>{
 		try{
 			const sandbox = GenerateDefault(obj);//, console.log);
-			return Function("try{with(this){_;" + code + "}}catch(e){return e}").apply(sandbox, [...args]);
+			const compiled = "with(this){_;(" + "" + "()=>{" + code + "})();}";
+			return Function(compiled).apply(sandbox, [...args]);
 		}catch(e){
+			console.warn(e);
 			return e;
 		}
 	};

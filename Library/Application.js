@@ -6,8 +6,8 @@ module.exports=((ATA)=>{
 			static Path = Path;
 			constructor(config){
 				super({
+					Path,
 					...config,
-					path: Path,
 				});
 			};
 			

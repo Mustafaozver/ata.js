@@ -1,14 +1,20 @@
 module.exports=((ATA)=>{
-	const Path = "./Config/";
+	const Path = "./Mod/";
 	
 	const Check = (data)=>{
-		try{
-			return JSON.parse(JSON.stringify(data));
-		}catch(e){
-			//throw e;
-			console.warn(e);
+		const {Environment, Config, Constant, Job, Library, Controller, Service} = data;
+		if(Environment && Config && Constant && Job && Library && Controller && Service){
+			return{
+				Environment,
+				Config,
+				Constant,
+				Job,
+				Library,
+				Controller,
+				Service,
+			};
 		}
-		throw new Error("Invalid Config File");
+		throw new Error("Invalid Mod File");
 	};
 	
 	return(class_)=>{
@@ -23,16 +29,11 @@ module.exports=((ATA)=>{
 			};
 			
 			get Type(){
-				return "Config";
-			};
-			
-			get Path(){
-				return ATA.Path.join(this.Directory, this.Name + ".js");
+				return "Mod";
 			};
 			
 			get Content(){
-				if(this[data])return this[data];
-				else return this.LoadRoot();
+				return this.LoadRoot();
 			};
 			
 			LoadRoot(){
@@ -41,8 +42,8 @@ module.exports=((ATA)=>{
 			
 			LoadSandBox(){
 				try{
-					const json = Check(this.LoadJSON(this.Path));
-					this[data] = json;
+					const json = this.LoadJSON(this.Path);
+					this[data] = Check(json);
 					this.OK(json);
 					return json;
 				}catch(e){

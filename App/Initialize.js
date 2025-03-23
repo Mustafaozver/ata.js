@@ -80,9 +80,20 @@
 	const Setup_Main = (project_path, package, me)=>{
 		Object.keys(ANA.System.Class).map((key)=>{
 			const Class = ANA.System.Class[key];
+			const temp_main = ATA.Path.join(MWD, "./Templates/MAIN");
 			me.Build[key] = {};
-			const obj = new Class({name:".", project: true});
-			ATA.FS.mkdirSync(ATA.Path.join(project_path, obj.Path), {
+			const obj = new Class({
+				Name:"",
+				Path: key,
+				project: true,
+				
+			});
+			
+			ATA.FS.mkdirSync(ATA.Path.join(project_path, obj.Directory), {
+				recursive: true
+			});
+			
+			ATA.FS.cpSync(temp_main, project_path, {
 				recursive: true
 			});
 		});
@@ -143,9 +154,10 @@
 		const projectVersion = await Promise.all([
 			parseInt(await GetEntry("1")),
 			parseInt(await GetEntry("0")),
-			parseInt(await GetEntry("0")),
-			parseInt(await GetEntry("0")),
 			parseInt(await GetEntry("1")),
+			parseInt(await GetEntry("0")),
+			parseInt(await GetEntry("0")),
+			parseInt(await GetEntry("0")),
 			await GetEntry("BETA"),
 		]);
 		
@@ -216,6 +228,7 @@
 		
 		await Setup_OS(project_path, package, me);
 		
+		await ApplyTemplate("PLAIN", project_path, package, me);
 		await ApplyTemplate("ELECTRON", project_path, package, me);
 		//await ApplyTemplate("REACT", project_path, package, me);
 		//await ApplyTemplate("EXPRESS", project_path, package, me);

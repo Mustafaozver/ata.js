@@ -1,0 +1,25 @@
+{
+	"THREAD": false,
+	"RESTART": false,
+	"Environment": {
+		"Mode": "Production"
+	},
+	"Config": {
+		"Default": "M"
+	},
+	"Constant": {
+		"Default": "M"
+	},
+	"Job": {
+		
+	},
+	"Library": {
+		
+	},
+	"Controller": {
+		"Run": "Run"
+	},
+	"Service":{
+		
+	}
+}
