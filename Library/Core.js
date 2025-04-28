@@ -4,6 +4,7 @@ module.exports=((ATA)=>{
 	
 	const ww = Symbol();
 	const isReady = Symbol();
+	const precommand = Symbol();
 	
 	const Pack = (obj)=>{
 		return Buffer.from(JSON.stringify({
@@ -14,8 +15,14 @@ module.exports=((ATA)=>{
 	const Loader = (class_, config)=>{
 		return()=>{
 			const path = ATA.Path.join(ATA.MWD, "./App/Run.Thread.js");
-			const worker = wt.fork(path, {
+			const cmd = [...class_[precommand], path];
+			console.log(cmd, cmd[0], [...cmd.slice(1)]);
+			const worker = wt.spawn(cmd[0], [...cmd.slice(1)], {
+				stdio: ["pipe", "pipe", "pipe", "ipc"],
+				shell: true,
+				cwd: ATA.CWD,
 				env: {
+					...process.env,
 					Opts: Pack({
 						Module: {
 							Name: config.Name,
@@ -31,10 +38,28 @@ module.exports=((ATA)=>{
 					}),
 					
 				},
-				//stdio: ["pipe", "pipe", "pipe", "ipc"],
 			});
+			
 			class_[ww] = worker;
+			
 			const addlistener = worker.addListener || worker.addEventListener || worker.on;
+			
+			worker.stdout.on("data", (message)=>{
+				console.log("Core Data => ", message + "");
+			});
+			
+			worker.stderr.on("data", (message)=>{
+				//msg += "Error : " + message;
+				console.log("Core Error => ", message + "");
+			});
+			
+			worker.stdin.on("data", (message)=>{
+				console.log("Core Error => ", message + "");
+			});
+			
+			worker.addListener("disconnect", ()=>{
+				//resolve(msg);
+			});
 			
 			addlistener.apply(worker, ["message", async function(){
 				console.log("Core message", [...arguments]);
@@ -69,6 +94,7 @@ module.exports=((ATA)=>{
 		return class extends class_{
 			[ww] = null;
 			[isReady] = false;
+			[precommand] = null;
 			
 			OnMessage = null;
 			OnError = null;
@@ -81,6 +107,7 @@ module.exports=((ATA)=>{
 				this.OnMessage = ()=>{};
 				this.OnError = ()=>{};
 				this.OnExit = ()=>{};
+				this[precommand] = [...config.Commands];
 				this[ww] = Loader(this, config);
 			};
 			

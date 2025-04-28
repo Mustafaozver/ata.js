@@ -1,8 +1,8 @@
 {
-	"name": "ata.js2",
-	"version": "9.0.5",
+	"name": "ata.js",
+	"version": "10.0.1",
 	"description": "ATA.js is a programmatic life cycle system for Javascript and typescript.",
-	"main": "./App/Main.js",
+	"main": "./Core/Ata.js",
 	"scripts": {
 		"test": "npx mocha"
 	},
@@ -10,6 +10,7 @@
 		"ata.init": "./App/Initialize.js",
 		"ata.run": "./App/Run.js",
 		"ata.test": "./App/Test.js",
+		"ata.electron": "./App/Run.Electron.js",
 		"ata.add": "./App/Add.js",
 		"ata.dev": "./App/Development.js",
 		"ata.update": "./App/Update.js",

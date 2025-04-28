@@ -6,8 +6,8 @@
 	const CWD = ATA.CWD;
 	const MWD = ATA.MWD;
 	
-	const no_regex = /^(((H|h)+(a)*(y)*(ı)*(r)*)|((N|n)+(o)*))$/i;
-	const ye_regex = /^(((E|e)+(v)*(e)*(t)*)|((Y|y)+(e)*(s)*))$/i;
+	const no_regex = /^(((H|h)+(a)*(y)*(ı)*(r)*)|((N|n)+(o)*))$/i; // NO or HAYIR
+	const ye_regex = /^(((E|e)+(v)*(e)*(t)*)|((Y|y)+(e)*(s)*))$/i; // YES or EVET
 	
 	let rl = null;
 	
