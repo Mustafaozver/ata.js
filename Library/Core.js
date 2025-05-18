@@ -1,8 +1,8 @@
 module.exports=((ATA)=>{
-	const Path = "./Core/";
 	const wt = require("node:child_process");
+	const Path = "./Core/";
 	
-	const ww = Symbol();
+	const ldr = Symbol();
 	const isReady = Symbol();
 	const precommand = Symbol();
 	
@@ -40,7 +40,7 @@ module.exports=((ATA)=>{
 				},
 			});
 			
-			class_[ww] = worker;
+			class_[ldr] = worker;
 			
 			const addlistener = worker.addListener || worker.addEventListener || worker.on;
 			
@@ -92,13 +92,16 @@ module.exports=((ATA)=>{
 	
 	return(class_)=>{
 		return class extends class_{
-			[ww] = null;
+			static Path = Path;
+			
+			[ldr] = null;
 			[isReady] = false;
 			[precommand] = null;
 			
 			OnMessage = null;
 			OnError = null;
 			OnExit = null;
+			
 			constructor(config){
 				super({
 					Path,
@@ -108,7 +111,7 @@ module.exports=((ATA)=>{
 				this.OnError = ()=>{};
 				this.OnExit = ()=>{};
 				this[precommand] = [...config.Commands];
-				this[ww] = Loader(this, config);
+				this[ldr] = Loader(this, config);
 			};
 			
 			get Type(){
@@ -121,14 +124,14 @@ module.exports=((ATA)=>{
 			
 			async Execute(){
 				try{
-					this[ww]();
+					this[ldr]();
 				}catch(e){
 					throw e;
 				}
 			};
 			
 			Send(){
-				this[ww].send.apply(this[ww], [...arguments]);
+				this[ldr].send.apply(this[ldr], [...arguments]);
 			};
 			
 			HeartBeat(){

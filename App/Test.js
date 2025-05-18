@@ -20,8 +20,9 @@
 	
 	const {
 		extendedProject,
-		Version,
 	} = ATA.Require("./Core/Main.js");
+	
+	const { Version } = ATA.Require("./Library/Version.js");
 	
 	const project = new extendedProject({
 		Name: MJSON.Name,

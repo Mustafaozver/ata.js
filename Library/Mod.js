@@ -20,6 +20,7 @@ module.exports=((ATA)=>{
 	return(class_)=>{
 		const data = Symbol();
 		return class extends class_{
+			static Path = Path;
 			[data] = null;
 			constructor(config){
 				super({

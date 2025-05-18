@@ -21,6 +21,11 @@ module.exports=((ATA)=>{
 		}));
 	};
 	
+	const CompileTS = async(code)=>{
+		// TODO: Compile TS
+		return code;
+	};
+	
 	ANA.System = {
 		Class:{},
 		
@@ -91,7 +96,7 @@ module.exports=((ATA)=>{
 			};
 			
 			get Content(){
-				return this.Code;
+				return CompileTS(this.Code);
 			};
 			
 			get Code(){
@@ -138,8 +143,8 @@ module.exports=((ATA)=>{
 				});
 			};
 			
-			LoadRoot(obj={}){
-				return this.Project.LoadRoot(this.Content, {
+			async LoadRoot(obj={}){
+				return this.Project.LoadRoot(await this.Content, {
 					Module: this,
 					OK: this[promise].resolve,
 					NO: this[promise].reject,
@@ -147,8 +152,8 @@ module.exports=((ATA)=>{
 				});
 			};
 			
-			LoadSandBox(obj={}){
-				return this.Project.LoadSandBox(this.Content, {
+			async LoadSandBox(obj={}){
+				return this.Project.LoadSandBox(await this.Content, {
 					Module: this,
 					OK: this[promise].resolve,
 					NO: this[promise].reject,
@@ -165,6 +170,7 @@ module.exports=((ATA)=>{
 	})(Class);
 	
 	const extendedProject = ((class_)=>{
+		const MODNAME = Symbol();
 		const Class = class extends class_{
 			Application = null;
 			Config = null;
@@ -194,39 +200,45 @@ module.exports=((ATA)=>{
 			Template = null;
 			Version = null;
 			
+			[MODNAME] = "";
+			
 			constructor(config){
 				super({
 					...config,
 				});
 				
-				this.Application = new Stack(Application, { Project: this });
-				this.Config = new Stack(Config, { Project: this });
-				this.Constant = new Stack(Constant, { Project: this });
-				//this.Container = new Stack(Container, { Project: this });
-				this.Controller = new Stack(Controller, { Project: this });
-				this.Core = new Stack(Core, { Project: this });
-				this.DataBase = new Stack(DataBase, { Project: this });
-				//this.Development = new Stack(Development, { Project: this });
-				this.Document = new Stack(Document, { Project: this });
-				this.Extension = new Stack(Extension, { Project: this });
-				//this.ETC = new Stack(ETC, { Project: this });
-				//this.Event = new Stack(Event, { Project: this });
-				//this.Helper = new Stack(Helper, { Project: this });
-				this.InterFace = new Stack(InterFace, { Project: this });
-				this.Job = new Stack(Job, { Project: this });
-				//this.Key = new Stack(Key, { Project: this });
-				//this.Locale = new Stack(Locale, { Project: this });
-				this.Library = new Stack(Library, { Project: this });
-				this.Log = new Stack(Log, { Project: this });
-				//this.Meta = new Stack(Meta, { Project: this });
-				this.Mod = new Stack(Mod, { Project: this });
-				//this.Queue = new Stack(Queue, { Project: this });
-				this.Service = new Stack(Service, { Project: this });
-				this.Source = new Stack(Source, { Project: this });
-				//this.Temporary = new Stack(Temporary, { Project: this });
-				//this.Template = new Stack(Template, { Project: this });
+				this.Application = new Stack(Application, this, { Project: this });
+				this.Config = new Stack(Config, this, { Project: this });
+				this.Constant = new Stack(Constant, this, { Project: this });
+				//this.Container = new Stack(Container, this, { Project: this });
+				this.Controller = new Stack(Controller, this, { Project: this });
+				this.Core = new Stack(Core, this, { Project: this });
+				this.DataBase = new Stack(DataBase, this, { Project: this });
+				//this.Development = new Stack(Development, this, { Project: this });
+				this.Document = new Stack(Document, this, { Project: this });
+				this.Extension = new Stack(Extension, this, { Project: this });
+				//this.ETC = new Stack(ETC, this, { Project: this });
+				//this.Event = new Stack(Event, this, { Project: this });
+				//this.Helper = new Stack(Helper, this, { Project: this });
+				this.InterFace = new Stack(InterFace, this, { Project: this });
+				this.Job = new Stack(Job, this, { Project: this });
+				//this.Key = new Stack(Key, this, { Project: this });
+				//this.Locale = new Stack(Locale, this, { Project: this });
+				this.Library = new Stack(Library, this, { Project: this });
+				this.Log = new Stack(Log, this, { Project: this });
+				//this.Meta = new Stack(Meta, this, { Project: this });
+				this.Mod = new Stack(Mod, this, { Project: this });
+				//this.Queue = new Stack(Queue, this, { Project: this });
+				this.Service = new Stack(Service, this, { Project: this });
+				this.Source = new Stack(Source, this, { Project: this });
+				//this.Temporary = new Stack(Temporary, this, { Project: this });
+				//this.Template = new Stack(Template, this, { Project: this });
 				
 				this.Version = new Version(config.Version);
+			};
+			
+			get ModName(){
+				return this[MODNAME];
 			};
 			
 			LoadRoot(content, obj={}){
@@ -281,8 +293,9 @@ module.exports=((ATA)=>{
 			};
 			
 			async Execute(name=""){
+				this[MODNAME] = name;
 				const mod = this.Mod.Get(name);
-				const {THREAD, RESTART, Environment, Config, Constant, Library, Controller, Service} = mod.Content;
+				const {THREAD, RESTART, Environment, Config, Constant, Library, Controller, Service} = await mod.Content;
 				
 				const configKeys = Object.keys(Config);
 				const constantKeys = Object.keys(Constant);

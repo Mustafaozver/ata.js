@@ -2,12 +2,12 @@ module.exports=((ATA)=>{
 	const Path = "./Job/";
 	
 	const controller = Symbol();
-	const jb = Symbol();
+	const ldr = Symbol();
 	
 	const Loader = (class_, config)=>{
 		return async()=>{
 			const resp = await config.Project.Execute(config.Name);
-			class_[jb] = resp;
+			class_[ldr] = resp;
 			class_.Environment = config.Environment;
 			class_.Project.Environment = config.Environment;
 			return true;
@@ -17,9 +17,10 @@ module.exports=((ATA)=>{
 	return(class_)=>{
 		const data = Symbol();
 		return class extends class_{
+			static Path = Path;
 			[data] = null;
 			[controller] = null;
-			[jb] = null;
+			[ldr] = null;
 			Environment = null;
 			OnData = null;
 			Send = null;
@@ -28,7 +29,7 @@ module.exports=((ATA)=>{
 					Path,
 					...config,
 				});
-				this[jb] = Loader(this, config);
+				this[ldr] = Loader(this, config);
 				this.Environment = {...config.Environment};
 				this.OnData = ()=>{};
 				this.Send = ()=>{};
@@ -52,7 +53,7 @@ module.exports=((ATA)=>{
 						console,
 						
 					});
-					this[jb]();
+					this[ldr]();
 					this[data] = json;
 					return json;
 				}catch(e){

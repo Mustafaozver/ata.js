@@ -27,6 +27,7 @@ module.exports=((ATA)=>{
 		const lastWrite = Symbol();
 		
 		return class extends class_{
+			static Path = Path;
 			[data] = null;
 			[isWrite] = false;
 			[lastWrite] = 0;

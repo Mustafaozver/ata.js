@@ -10,27 +10,27 @@ module.exports=((ATA)=>{
 	
 	const Stack = (()=>{
 		const class_ = Symbol();
-		const default_ = Symbol();
-		const config = Symbol();
+		const config_ = Symbol();
+		const project_ = Symbol();
 		const arr_ = Symbol();
 		const Class = class{
 			[class_] = null;
-			[default_] = null;
-			[config] = null;
+			[config_] = null;
+			[project_] = null;
 			[arr_] = {};
 			
-			constructor(class__, config={}) {
+			constructor(class__, project, config={}) {
 				this[class_] = class__;
-				this[config] = config;
+				this[config_] = config;
+				this[project_] = project;
 			};
 			
 			Add(name, config={}){
 				const obj = new this[class_]({
 					...config,
-					...this[config],
+					...this[config_],
 				});
 				this[arr_][name+""] = obj;
-				if(config.Default)this[default_] = name+"";
 				return obj;
 			};
 			
@@ -43,9 +43,9 @@ module.exports=((ATA)=>{
 				return Object.values(this[arr_]);
 			};
 			
-			get Defalut(){
+			get Default(){
 				try{
-					return this[arr_][this[default_]];
+					return this[arr_][this[project_].ModName];
 				}catch(e){
 					return null;
 				}

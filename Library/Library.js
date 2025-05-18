@@ -4,6 +4,7 @@ module.exports=((ATA)=>{
 	
 	return(class_)=>{
 		return class extends class_{
+			static Path = Path;
 			[data] = null;
 			constructor(config){
 				super({

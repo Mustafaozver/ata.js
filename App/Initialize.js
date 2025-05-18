@@ -13,7 +13,7 @@
 	
 	process["__MODE"] = "INITIALIZE";
 	
-	const atajs_package = ATA.Require("./package.json");
+	const atajs_package = ATA.Require(ATA.Path.join(ATA.MWD, "./package.json"));
 	
 	const { extendedProject } = ATA.Require("./Core/Main.js");
 	
@@ -78,25 +78,24 @@
 	};
 	
 	const Setup_Main = (project_path, package, me)=>{
-		Object.keys(ANA.System.Class).map((key)=>{
-			const Class = ANA.System.Class[key];
-			const temp_main = ATA.Path.join(MWD, "./Templates/MAIN");
+		const temp_main = ATA.Path.join(MWD, "./Templates/MAIN");
+		
+		const folder_names = Object.keys(ANA.System.Class).map((key)=>{
 			me.Build[key] = {};
-			const obj = new Class({
-				Name:"",
-				Path: key,
-				project: true,
-				
-			});
 			
-			ATA.FS.mkdirSync(ATA.Path.join(project_path, obj.Directory), {
+			const path = ATA.Path.join(project_path, ANA.System.Class[key].Path);
+			
+			ATA.FS.mkdirSync(path, {
 				recursive: true
 			});
 			
-			ATA.FS.cpSync(temp_main, project_path, {
-				recursive: true
-			});
+			return path;
 		});
+		
+		ATA.FS.cpSync(temp_main, project_path, {
+			recursive: true
+		});
+		
 	};
 	
 	const Setup_OS = async(project_path, package, me)=>{
@@ -128,7 +127,6 @@
 			case"o":
 			default:
 				me.OS = "OTHER";
-				//package.os = ["win32"];
 			break;
 		}
 	};
@@ -137,7 +135,7 @@
 		console.log("Project Name : ");
 		const projectName = await GetEntry("atajs-example-project");
 		
-		const project_path = ATA.Path.join(CWD/*, projectName*/);
+		const project_path = ATA.Path.join(CWD, projectName);
 		
 		/*
 		ATA.FS.mkdirSync(project_path, {
@@ -239,7 +237,7 @@
 		ATA.FS.writeFileSync(package_path, JSON_stringify(package), "UTF8");
 		ATA.FS.writeFileSync(me_path, JSON_stringify(me), "UTF8");
 		
-		//await Run_Command("npm install", project_path);
+		await Run_Command("npm install", project_path);
 		//await Run_Command("konsole", project_path);
 		
 		Exit();

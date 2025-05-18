@@ -4,6 +4,7 @@ module.exports=((ATA)=>{
 	return(class_)=>{
 		const data = Symbol();
 		return class extends class_{
+			static Path = Path;
 			[data] = null;
 			constructor(config){
 				super({
@@ -28,13 +29,14 @@ module.exports=((ATA)=>{
 				return this[data];
 			};
 			
-			async Execute(){
+			async Execute(obj={}){
 				try{
 					//const json = this.LoadSandBox();
-					const json = this.LoadRoot({
+					const json = await this.LoadRoot({
 						Import: this.Import,
 						Inject: this.Inject,
-						console
+						console,
+						...obj,
 					});
 					this[data] = json;
 					return json;

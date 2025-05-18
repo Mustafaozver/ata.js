@@ -10,6 +10,7 @@ module.exports=((ATA)=>{
 		const _Log = Symbol();
 		const _Warn = Symbol();
 		return class extends class_{
+			static Path = Path;
 			[_Assert] = null;
 			[_Clear] = null;
 			[_Debug] = null;
