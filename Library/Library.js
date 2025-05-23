@@ -2,6 +2,10 @@ module.exports=((ATA)=>{
 	const Path = "./Library/";
 	const data = Symbol();
 	
+	const Require = (name)=>{
+		require("node:" + name);
+	};
+	
 	return(class_)=>{
 		return class extends class_{
 			static Path = Path;
@@ -25,9 +29,14 @@ module.exports=((ATA)=>{
 				return this[data];
 			};
 			
-			async Execute(){
+			async Execute(obj={}){
 				try{
-					const json = this.LoadRoot();
+					const json = this.LoadRoot({
+						Import: this.Import,
+						Inject: this.Inject,
+						Require,
+						...obj,
+					});
 					this[data] = json;
 					return json;
 				}catch(e){
