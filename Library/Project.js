@@ -43,9 +43,14 @@ module.exports=((ATA)=>{
 				return Object.values(this[arr_]);
 			};
 			
+			get NameList(){
+				return Object.keys(this[arr_]);
+			};
+			
 			get Default(){
 				try{
-					return this[arr_][this[project_].ModName];
+					return this[arr_]["Default"];
+					//return this[arr_][this[project_].ModName];
 				}catch(e){
 					return null;
 				}

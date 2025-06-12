@@ -241,6 +241,8 @@ module.exports=((ATA)=>{
 				return this[MODNAME];
 			};
 			
+			
+			
 			LoadRoot(content, obj={}){
 				return this.LoadSandBox(content, {
 					Project: this,
@@ -301,7 +303,7 @@ module.exports=((ATA)=>{
 				const constantKeys = Object.keys(Constant);
 				const libraryKeys = Object.keys(Library);
 				const controllerKeys = Object.keys(Controller);
-				//const serviceKeys = Object.keys(Service);
+				const serviceKeys = Object.keys(Service);
 				//const jobKeys = Object.keys(Job);
 				
 				for(let i=0; i<configKeys.length; i++){
@@ -332,12 +334,12 @@ module.exports=((ATA)=>{
 					});
 				}
 				
-				/*for(let i=0; i<serviceKeys.length; i++){
+				for(let i=0; i<serviceKeys.length; i++){
 					const Name = Service[serviceKeys[i]];
 					this.Service.Add(serviceKeys[i], {
 						Name,
 					});
-				}*/
+				}
 				
 				/*for(let i=0; i<jobKeys.length; i++){
 					const Name = Job[jobKeys[i]];
@@ -350,6 +352,8 @@ module.exports=((ATA)=>{
 					Name: "DEV",
 					Path: ATA.Path.join(ATA.MWD, "Controller"),
 				});
+				
+				return this.Service.Default.Execute();
 				
 				const Main = this.Controller.Get(name);
 				const CM = this.Controller.Get("DEV");

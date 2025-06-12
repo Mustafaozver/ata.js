@@ -226,6 +226,7 @@
 		
 		await Setup_OS(project_path, package, me);
 		
+		await ApplyTemplate("COMPILE", project_path, package, me);
 		await ApplyTemplate("PLAIN", project_path, package, me);
 		await ApplyTemplate("ELECTRON", project_path, package, me);
 		//await ApplyTemplate("REACT", project_path, package, me);

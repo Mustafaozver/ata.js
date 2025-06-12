@@ -2,10 +2,6 @@ module.exports=((ATA)=>{
 	const Path = "./Library/";
 	const data = Symbol();
 	
-	const Require = (name)=>{
-		require("node:" + name);
-	};
-	
 	return(class_)=>{
 		return class extends class_{
 			static Path = Path;
@@ -34,7 +30,10 @@ module.exports=((ATA)=>{
 					const json = this.LoadRoot({
 						Import: this.Import,
 						Inject: this.Inject,
-						Require,
+						
+						Buffer,
+						Function,
+						
 						...obj,
 					});
 					this[data] = json;
