@@ -35,7 +35,10 @@ module.exports=((ATA)=>{
 					const json = await this.LoadRoot({
 						Import: this.Import,
 						Inject: this.Inject,
+						
+						setTimeout,
 						console,
+						
 						...obj,
 					});
 					this[data] = json;

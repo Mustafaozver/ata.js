@@ -238,7 +238,7 @@
 		ATA.FS.writeFileSync(package_path, JSON_stringify(package), "UTF8");
 		ATA.FS.writeFileSync(me_path, JSON_stringify(me), "UTF8");
 		
-		await Run_Command("npm install", project_path);
+		//await Run_Command("npm install", project_path);
 		//await Run_Command("konsole", project_path);
 		
 		Exit();

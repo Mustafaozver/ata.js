@@ -35,14 +35,17 @@ module.exports=((ATA)=>{
 		
 		const CreatePromise = (class_)=>{
 			const asp = {};
+			
 			asp.promise = new Promise((resolve, reject)=>{
 				asp.resolve = resolve;
 				asp.reject = reject;
 			});
+			
 			asp.promise.then((data)=>{
 				class_[isReady] = true;
 				class_[exports] = data;
 			});
+			
 			return asp;
 		};
 		
@@ -297,13 +300,14 @@ module.exports=((ATA)=>{
 			async Execute(name=""){
 				this[MODNAME] = name;
 				const mod = this.Mod.Get(name);
-				const {THREAD, RESTART, Environment, Config, Constant, Library, Controller, Service} = await mod.Content;
+				const {THREAD, RESTART, Environment, Config, Constant, Library, Controller, /* Core, */ Service} = await mod.Content;
 				
 				const configKeys = Object.keys(Config);
 				const constantKeys = Object.keys(Constant);
 				const libraryKeys = Object.keys(Library);
 				const controllerKeys = Object.keys(Controller);
 				const serviceKeys = Object.keys(Service);
+				//const coreKeys = Object.keys(Core);
 				//const jobKeys = Object.keys(Job);
 				
 				for(let i=0; i<configKeys.length; i++){
@@ -334,6 +338,13 @@ module.exports=((ATA)=>{
 					});
 				}
 				
+				/*for(let i=0; i<coreKeys.length; i++){
+					const Name = Core[coreKeys[i]];
+					this.Core.Add(coreKeys[i], {
+						Name,
+					});
+				}*/
+				
 				for(let i=0; i<serviceKeys.length; i++){
 					const Name = Service[serviceKeys[i]];
 					this.Service.Add(serviceKeys[i], {
@@ -354,27 +365,6 @@ module.exports=((ATA)=>{
 				});
 				
 				return this.Service.Default.Execute();
-				
-				const Main = this.Controller.Get(name);
-				const CM = this.Controller.Get("DEV");
-				
-				await CM.Execute();
-				await CM.Promise;
-				
-				await Main.Execute();
-				await Main.Promise;
-				
-				const f = CM.Path;
-				
-				const { Return: MRETURN, Export: MEXPORT } = Main;
-				const { Return: CRETURN, Export: CEXPORT } = CM;
-				
-				/*
-				const core = this.Core.Add("THREAD1", {
-					Name: "THREAD1",
-					
-				});
-				*/
 			};
 		};
 		

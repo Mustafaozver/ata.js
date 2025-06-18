@@ -25,6 +25,49 @@ module.exports=((ATA)=>{
 		});
 	};
 	
+	const Awaiter = async(func)=>{
+		if(func.constructor.name === "Function")return new Promise(func);
+		else if(func.constructor.name === "AsyncFunction")return await func();
+		else if(func.constructor.name === "Array")return func.map(Awaiter);
+		else return func;
+	};
+	
+	const Queue = async(mode="all", arr=[])=>{
+		
+		const arr_ = [...arr];
+		switch(mode){
+			default:
+			case"all":
+				return Promise.all(arr_.map((item)=>{
+					return new Promise(item);
+				}));
+			break;
+			case"race":
+				return Promise.race(arr_.map((item)=>{
+					return new Promise(item);
+				}));
+			break;
+			case"order":
+				const calls = arr_.reduce((prev, curr)=>{
+					
+					const promise = new Promise(async(resolve, reject)=>{
+						try{
+							const resp = await prev;
+							return curr(resolve, reject, resp);
+						}catch(e){
+							reject(e);
+						}
+						reject();
+					});
+					
+					return promise;
+				});
+				
+				return calls;
+			break;
+		}
+	};
+	
 	return(class_)=>{
 		return class extends class_{
 			static Path = Path;
@@ -35,7 +78,6 @@ module.exports=((ATA)=>{
 					...config,
 				});
 				this[data_] = Loader(this, config);
-				console.log("33");
 			};
 			
 			get Path(){
@@ -58,12 +100,35 @@ module.exports=((ATA)=>{
 				//...
 			};
 			
+			get Library(){
+				return this.super.Project.Library;
+			};
+			
+			get Controller(){
+				return this.super.Project.Controller;
+			};
+			
+			LoadRoot(){
+				return this.LoadSandBox();
+			};
+			
 			async Execute(obj={}){
 				try{
-					const json = this.LoadRoot({
+					const json = this.LoadSandBox({
 						Import: this.Import,
 						Inject: this.Inject,
 						...obj,
+						
+						Module: false,
+						
+						Controller: this.Project.Controller,
+						Core: this.Project.Core,
+						Library: this.Project.Library,
+						Service: this.Project.Service,
+						
+						Queue,
+						setTimeout,
+						console,
 					});
 					this[data_] = json;
 					return json;
