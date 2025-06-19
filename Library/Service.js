@@ -61,7 +61,7 @@ module.exports=((ATA)=>{
 					});
 					
 					return promise;
-				});
+				}, Promise.resolve());
 				
 				return calls;
 			break;
