@@ -69,9 +69,16 @@ module.exports=((ATA)=>{
 	};
 	
 	return(class_, Adapter)=>{
+		const _active = Symbol();
+		const _status = Symbol();
+		
+		const _GLOBAL = Adapter.GenerateServiceGlobal();
+		
 		return class extends class_{
 			static Path = Path;
 			[data_] = null;
+			[_active] = false;
+			[_status] = "P"; // P ending, D one, R eady, E rror, S tarted, C ompleted
 			constructor(config){
 				super({
 					Path,
@@ -93,11 +100,11 @@ module.exports=((ATA)=>{
 			};
 			
 			get Active(){
-				//...
+				return this[_active];
 			};
 			
 			get Status(){
-				//...
+				return this[_status];
 			};
 			
 			get Library(){
@@ -127,8 +134,7 @@ module.exports=((ATA)=>{
 						Service: this.Project.Service,
 						
 						Queue,
-						setTimeout,
-						console,
+						..._GLOBAL,
 					});
 					this[data_] = json;
 					return json;
