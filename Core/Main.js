@@ -1,6 +1,7 @@
 module.exports=((ATA)=>{
 	
 	const { Class, Project, Stack } = ATA.Require("./Library/Project.js");
+	const Adapter = ATA.Require("./Library/Adapter.js");
 	const { RunJS, RunTS, Require } = ATA.SandBox;
 	
 	const PushSetup = (f=()=>{})=>{
@@ -371,32 +372,32 @@ module.exports=((ATA)=>{
 		return Class;
 	})(Project);
 	
-	const Application = ATA.Require("./Library/Application.js")(extendedClass);
-	const Config = ATA.Require("./Library/Config.js")(extendedClass);
-	const Constant = ATA.Require("./Library/Constant.js")(extendedClass);
-	//const Container = ATA.Require("./Library/Container.js")(extendedClass);
-	const Controller = ATA.Require("./Library/Controller.js")(extendedClass);
-	const Core = ATA.Require("./Library/Core.js")(extendedClass);
-	const DataBase = ATA.Require("./Library/DataBase.js")(extendedClass);
-	//const Development = ATA.Require("./Library/Development.js")(extendedClass);
-	const Document = ATA.Require("./Library/Document.js")(extendedClass);
-	const Extension = ATA.Require("./Library/Extension.js")(extendedClass);
-	//const ETC = ATA.Require("./Library/ETC.js")(extendedClass);
-	//const Event = ATA.Require("./Library/Event.js")(extendedClass);
-	//const Helper = ATA.Require("./Library/Helper.js")(extendedClass);
-	const InterFace = ATA.Require("./Library/InterFace.js")(extendedClass);
-	const Job = ATA.Require("./Library/Job.js")(extendedClass);
-	//const Key = ATA.Require("./Library/Key.js")(extendedClass);
-	//const Locale = ATA.Require("./Library/Locale.js")(extendedClass);
-	const Library = ATA.Require("./Library/Library.js")(extendedClass);
-	const Log = ATA.Require("./Library/Log.js")(extendedClass);
-	//const Meta = ATA.Require("./Library/Meta.js")(extendedClass);
-	const Mod = ATA.Require("./Library/Mod.js")(extendedClass);
-	//const Queue = ATA.Require("./Library/Queue.js")(extendedClass);
-	const Service = ATA.Require("./Library/Service.js")(extendedClass);
-	const Source = ATA.Require("./Library/Source.js")(extendedClass);
-	//const Temporary = ATA.Require("./Library/Temporary.js")(extendedClass);
-	//const Template = ATA.Require("./Library/Template.js")(extendedClass);
+	const Application = ATA.Require("./Library/Application.js")(extendedClass, Adapter);
+	const Config = ATA.Require("./Library/Config.js")(extendedClass, Adapter);
+	const Constant = ATA.Require("./Library/Constant.js")(extendedClass, Adapter);
+	//const Container = ATA.Require("./Library/Container.js")(extendedClass, Adapter);
+	const Controller = ATA.Require("./Library/Controller.js")(extendedClass, Adapter);
+	const Core = ATA.Require("./Library/Core.js")(extendedClass, Adapter);
+	const DataBase = ATA.Require("./Library/DataBase.js")(extendedClass, Adapter);
+	//const Development = ATA.Require("./Library/Development.js")(extendedClass, Adapter);
+	const Document = ATA.Require("./Library/Document.js")(extendedClass, Adapter);
+	const Extension = ATA.Require("./Library/Extension.js")(extendedClass, Adapter);
+	//const ETC = ATA.Require("./Library/ETC.js")(extendedClass, Adapter);
+	//const Event = ATA.Require("./Library/Event.js")(extendedClass, Adapter);
+	//const Helper = ATA.Require("./Library/Helper.js")(extendedClass, Adapter);
+	const InterFace = ATA.Require("./Library/InterFace.js")(extendedClass, Adapter);
+	const Job = ATA.Require("./Library/Job.js")(extendedClass, Adapter);
+	//const Key = ATA.Require("./Library/Key.js")(extendedClass, Adapter);
+	//const Locale = ATA.Require("./Library/Locale.js")(extendedClass, Adapter);
+	const Library = ATA.Require("./Library/Library.js")(extendedClass, Adapter);
+	const Log = ATA.Require("./Library/Log.js")(extendedClass, Adapter);
+	//const Meta = ATA.Require("./Library/Meta.js")(extendedClass, Adapter);
+	const Mod = ATA.Require("./Library/Mod.js")(extendedClass, Adapter);
+	//const Queue = ATA.Require("./Library/Queue.js")(extendedClass, Adapter);
+	const Service = ATA.Require("./Library/Service.js")(extendedClass, Adapter);
+	const Source = ATA.Require("./Library/Source.js")(extendedClass, Adapter);
+	//const Temporary = ATA.Require("./Library/Temporary.js")(extendedClass, Adapter);
+	//const Template = ATA.Require("./Library/Template.js")(extendedClass, Adapter);
 	
 	const { Version } = ATA.Require("./Library/Version.js");
 	

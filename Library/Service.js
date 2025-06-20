@@ -68,7 +68,7 @@ module.exports=((ATA)=>{
 		}
 	};
 	
-	return(class_)=>{
+	return(class_, Adapter)=>{
 		return class extends class_{
 			static Path = Path;
 			[data_] = null;

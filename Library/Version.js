@@ -147,6 +147,8 @@ module.exports=((ATA)=>{
 		return Class;
 	})();
 	
+	console.log("VERSION");
+
 	return{
 		Version
 	};

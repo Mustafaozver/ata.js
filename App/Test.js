@@ -17,28 +17,27 @@
 	const MJSON = ATA.Require(ATA.Path.join(ATA.CWD, "./Config/M.json"));
 	const packageJSON_ATA = ATA.Require(ATA.Path.join(ATA.MWD, "./package.json"));
 	
-	
 	const {
 		extendedProject,
 	} = ATA.Require("./Core/Main.js");
 	
-	const { Version } = ATA.Require("./Library/Version.js");
+	const Environment = {
+		
+	};
 	
 	const project = new extendedProject({
-		Name: MJSON.Name,
+		...MJSON,
 		Path: ATA.Path.join(ATA.CWD, "./"),
+		Environment,
 	});
 	
-	project.Version = new Version([Date.now(), ...MJSON.Version]);
-	
-	console.log({
-		//packageJSON,
-		//packageJSON_ATA,
-		LL: MJSON,
-		VV: project.Version.VersionF,
-		project,
-		//LO: project.Path,
-		//LN: project.Name,
+	project.Mod.Add("Test", {
+		Name: "Test.json",
+		//Path: "./Mod/Run.json",
 	});
 	
+	project.Execute("Run").then(()=>{
+		
+	});
+
 })(require("../Core/Ata.js")());

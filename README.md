@@ -56,7 +56,7 @@ an-example-project/
 
 Here are the main directories and their purposes (for details, click note links on each explanation):
 
-- **App**: Contains the core application logic. [details](https://github.com/Mustafaozver/ata.js/blob/main/Document/App.md)
+- **Application**: Contains the core application logic. [details](https://github.com/Mustafaozver/ata.js/blob/main/Document/Application.md)
 - **Config**: Holds configuration files and environment settings. [details](https://github.com/Mustafaozver/ata.js/blob/main/Document/Config.md)
 - **Constant**: Stores constant values used throughout the application. [details](https://github.com/Mustafaozver/ata.js/blob/main/Document/Constant.md)
 - **Controller**: Manages the logic for specific components, can have root access to the system. [details](https://github.com/Mustafaozver/ata.js/blob/main/Document/Controller.md)

@@ -31,26 +31,13 @@
 		Environment,
 	});
 	
-	const mod = project.Mod.Add("Run", {
+	project.Mod.Add("Run", {
 		Name: "Run.json",
 		//Path: "./Mod/Run.json",
 	});
 	
 	project.Execute("Run").then(()=>{
-		XXXX();
+		
 	});
-	
-	const XXXX = ()=>{
-		
-		
-		//const data = project.Constant.Get("Default").LoadRoot();
-		const data = project.Constant.Default.LoadRoot();
-		console.log({
-			///GG: project.Constant.List,
-			data
-		});
-	};
-	
-	//setTimeout(XXXX, 1000);
 	
 })(require("../Core/Ata.js")());

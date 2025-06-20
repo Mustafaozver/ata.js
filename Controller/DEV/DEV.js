@@ -1,8 +1,6 @@
 //console.log("DEVVVVVVVV");
 
-
-
-
-
-OK("DEVOK");
-return "DEVRETURN";
+return(()=>{
+	OK("DEVOK");
+	return "DEVRETURN";
+})();
