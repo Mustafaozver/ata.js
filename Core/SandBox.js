@@ -259,8 +259,8 @@ module.exports = ((ATA)=>{
 			const compiled = "with(this){_;(" + "" + "()=>{" + code + "})();}";
 			return Function(compiled).apply(sandbox, [...args]);
 		}catch(e){
-			console.warn(e);
-			return e;
+			//console.warn(e);
+			throw e;
 		}
 	};
 	

@@ -1,6 +1,7 @@
 {
 	"THREAD": false,
 	"RESTART": false,
+	"Application": "MAIN.js",
 	"Environment": {
 		"Mode": "Production"
 	},
@@ -11,15 +12,21 @@
 		"Default": "M"
 	},
 	"Job": {
-		
+		"Default": "THREAD1"
 	},
 	"Library": {
-		
+		"Default": "Run",
+		"Library0": "Library0"
 	},
 	"Controller": {
-		"Run": "Run"
+		"Run": "Run",
+		"Controller0": "Controller0"
+	},
+	"Core": {
+		"Default": "Run"
 	},
 	"Service":{
-		"Default": "Run"
+		"Default": "Run",
+		"Service0": "Service0"
 	}
 }

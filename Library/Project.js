@@ -52,6 +52,11 @@ module.exports=((ATA)=>{
 					return this[arr_]["Default"];
 					//return this[arr_][this[project_].ModName];
 				}catch(e){
+					Adapter.Report({
+						Type: "Error",
+						Message: "Module " + this.Type + " => " + this.Name + " [" + this.Path + "]",
+						Root: e,
+					});
 					return null;
 				}
 			};

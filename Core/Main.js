@@ -174,6 +174,42 @@ module.exports=((ATA)=>{
 	})(Class);
 	
 	const extendedProject = ((class_)=>{
+		
+		const Execute = async (project, { Application, Environment })=>{
+			project.Controller.Add("DEV", {
+				Name: "DEV",
+				Path: ATA.Path.join(ATA.MWD, "Controller"),
+			});
+			
+			const app = project.Application.Add("Default", {
+				Name: Application,
+			});
+			
+			const service = project.Service.Default;
+			//project.Application.Default;
+			
+			service.Execute({});
+			await service.Promise;
+			
+			app.Execute({});
+			await app.Promise;
+			
+			const dirPath = ATA.Path.join(ATA.CWD, "Extension");
+			
+			ATA.FS.readdirSync(dirPath).map((Name)=>{
+				const folderPath = ATA.Path.join(dirPath, Name);
+				const indexPath = ATA.Path.join(folderPath, "Index.js");
+				if(!ATA.FS.existsSync(indexPath))return;
+				const stat = ATA.FS.statSync(indexPath);
+				if(stat.isDirectory())return;
+				const extension = project.Extension.Add(Name, {
+					Name,
+				});
+				extension.Execute();
+				return extension;
+			});
+		};
+		
 		const MODNAME = Symbol();
 		const Class = class extends class_{
 			Application = null;
@@ -301,7 +337,7 @@ module.exports=((ATA)=>{
 			async Execute(name=""){
 				this[MODNAME] = name;
 				const mod = this.Mod.Get(name);
-				const {THREAD, RESTART, Environment, Config, Constant, Library, Controller, /* Core, */ Service} = await mod.Content;
+				const { THREAD, RESTART, Environment, Application, Config, Constant, Library, Controller, /* Core, */ Service} = await mod.Content;
 				
 				const configKeys = Object.keys(Config);
 				const constantKeys = Object.keys(Constant);
@@ -315,6 +351,7 @@ module.exports=((ATA)=>{
 					const Name = Config[configKeys[i]];
 					this.Config.Add(configKeys[i], {
 						Name,
+						Environment,
 					});
 				}
 				
@@ -322,6 +359,7 @@ module.exports=((ATA)=>{
 					const Name = Constant[constantKeys[i]];
 					this.Constant.Add(constantKeys[i], {
 						Name,
+						Environment,
 					});
 				}
 				
@@ -329,6 +367,7 @@ module.exports=((ATA)=>{
 					const Name = Library[libraryKeys[i]];
 					this.Library.Add(libraryKeys[i], {
 						Name,
+						Environment,
 					});
 				}
 				
@@ -336,6 +375,7 @@ module.exports=((ATA)=>{
 					const Name = Controller[controllerKeys[i]];
 					this.Controller.Add(controllerKeys[i], {
 						Name,
+						Environment,
 					});
 				}
 				
@@ -350,6 +390,7 @@ module.exports=((ATA)=>{
 					const Name = Service[serviceKeys[i]];
 					this.Service.Add(serviceKeys[i], {
 						Name,
+						Environment,
 					});
 				}
 				
@@ -360,12 +401,10 @@ module.exports=((ATA)=>{
 					});
 				}*/
 				
-				this.Controller.Add("DEV", {
-					Name: "DEV",
-					Path: ATA.Path.join(ATA.MWD, "Controller"),
+				Execute(this, {
+					Application,
+					Environment,
 				});
-				
-				return this.Service.Default.Execute();
 			};
 		};
 		

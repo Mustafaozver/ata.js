@@ -1,3 +1,14 @@
 {
-	
+	"isWrite": false,
+	"lastWrite": 0,
+	"Constant0": 1453,
+	"Constant1": "Constant1",
+	"Constant2": [
+		"Constant2-1",
+		"Constant2-2"
+	],
+	"Constant3": {
+		"Constant3-1-key": "Constant3-1-value",
+		"Constant3-2-key": "Constant3-2-value"
+	}
 }

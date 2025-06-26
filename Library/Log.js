@@ -1,7 +1,7 @@
 module.exports=((ATA)=>{
 	const Path = "./Log/";
 	
-	return(class_)=>{
+	return(class_, Adapter)=>{
 		const _Assert = Symbol();
 		const _Clear = Symbol();
 		const _Debug = Symbol();

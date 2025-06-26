@@ -9,7 +9,7 @@ module.exports=((ATA)=>{
 		};
 	};
 	
-	return(class_)=>{
+	return(class_, Adapter)=>{
 		const data = Symbol();
 		return class extends class_{
 			static Path = Path;
@@ -28,24 +28,29 @@ module.exports=((ATA)=>{
 			};
 			
 			get Path(){
-				return ATA.Path.join(this.Directory, this.Name + "/" + this.Name + ".js");
+				return ATA.Path.join(this.Directory, this.Name + "/Index.js");
 			};
 			
-			get Return() {
+			get Return(){
 				return this[data];
 			};
 			
 			async Execute(obj={}){
 				try{
-					//const json = this.LoadSandBox();
 					const json = this.LoadRoot({
 						Import: this.Import,
 						Inject: this.Inject,
+						console,
 						...obj,
 					});
 					this[data] = json;
 					return json;
 				}catch(e){
+					Adapter.Report({
+						Type: "Error",
+						Message: "Module " + this.Type + " => " + this.Name + " [" + this.Path + "]",
+						Root: e,
+					});
 					return e;
 				}
 			};

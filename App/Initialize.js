@@ -174,7 +174,7 @@
 		package.description = projectDescription;
 		
 		package.keywords = [];
-		package.main = "./App/Main.js";
+		package.main = "./App/MAIN.js";
 		package.license = projectLicense;
 		package.scripts = {
 			"test": "npx ata.test",
@@ -214,6 +214,7 @@
 		
 		//package.private = true;
 		
+		me.Application = "MAIN.js";
 		me.Name = projectName;
 		me.Version = projectVersion;
 		me.Description = projectDescription;

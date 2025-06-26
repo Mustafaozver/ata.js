@@ -2,6 +2,11 @@ module.exports=((ATA)=>{
 	const Path = "./Service/";
 	const data_ = Symbol();
 	
+	const _active = Symbol();
+	const _status = Symbol();
+	const _startTime = Symbol();
+	const _readyTime = Symbol();
+	
 	ATA.GLOBAL.SERVICE = {
 		Get: null,
 	};
@@ -18,10 +23,13 @@ module.exports=((ATA)=>{
 	
 	const Loader = (class_, config)=>{
 		stack[config.Name] = class_;
-		class_.Promise.then((data)=>{
-			console.log("SERVICE => ", {
-				data
-			});
+		class_.Promise.then((data)=>{   
+			class_[_readyTime] = (new Date()).getTime();
+			class_[_status] = "C";
+		}).catch(()=>{
+			class_[_readyTime] = -1;
+			class_[_status] = "E";
+			this[_active] = false;
 		});
 	};
 	
@@ -62,16 +70,12 @@ module.exports=((ATA)=>{
 					
 					return promise;
 				}, Promise.resolve());
-				
 				return calls;
 			break;
 		}
 	};
 	
 	return(class_, Adapter)=>{
-		const _active = Symbol();
-		const _status = Symbol();
-		
 		const _GLOBAL = Adapter.GenerateServiceGlobal();
 		
 		return class extends class_{
@@ -79,6 +83,10 @@ module.exports=((ATA)=>{
 			[data_] = null;
 			[_active] = false;
 			[_status] = "P"; // P ending, D one, R eady, E rror, S tarted, C ompleted
+			
+			[_startTime] = 0;
+			[_readyTime] = 0;
+			
 			constructor(config){
 				super({
 					Path,
@@ -107,14 +115,6 @@ module.exports=((ATA)=>{
 				return this[_status];
 			};
 			
-			get Library(){
-				return this.super.Project.Library;
-			};
-			
-			get Controller(){
-				return this.super.Project.Controller;
-			};
-			
 			LoadRoot(){
 				return this.LoadSandBox();
 			};
@@ -122,23 +122,28 @@ module.exports=((ATA)=>{
 			async Execute(obj={}){
 				try{
 					const json = this.LoadSandBox({
-						Import: this.Import,
-						Inject: this.Inject,
 						...obj,
 						
-						Module: false,
-						
-						Controller: this.Project.Controller,
-						Core: this.Project.Core,
-						Library: this.Project.Library,
-						Service: this.Project.Service,
+						Project: this.Project,
+						//Controller: this.Project.Controller,
+						//Core: this.Project.Core,
+						//Library: this.Project.Library,
+						//Service: this.Project.Service,
 						
 						Queue,
 						..._GLOBAL,
 					});
+					this[_startTime] = (new Date()).getTime();
+					this[_status] = "S";
+					this[_active] = true;
 					this[data_] = json;
 					return json;
 				}catch(e){
+					Adapter.Report({
+						Type: "Error",
+						Message: "Module " + this.Type + " => " + this.Name + " [" + this.Path + "]",
+						Root: e,
+					});
 					return e;
 				}
 			};

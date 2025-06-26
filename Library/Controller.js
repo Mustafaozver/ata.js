@@ -1,7 +1,7 @@
 module.exports=((ATA)=>{
 	const Path = "./Controller/";
 	
-	return(class_)=>{
+	return(class_, Adapter)=>{
 		const data = Symbol();
 		return class extends class_{
 			static Path = Path;
@@ -35,15 +35,18 @@ module.exports=((ATA)=>{
 					const json = await this.LoadRoot({
 						Import: this.Import,
 						Inject: this.Inject,
-						
-						setTimeout,
-						console,
-						
 						...obj,
+						console,
+						setTimeout,
 					});
 					this[data] = json;
 					return json;
 				}catch(e){
+					Adapter.Report({
+						Type: "Error",
+						Message: "Module " + this.Type + " => " + this.Name + " [" + this.Path + "]",
+						Root: e,
+					});
 					return e;
 				}
 			};

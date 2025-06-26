@@ -21,7 +21,7 @@ module.exports=((ATA)=>{
 		}
 	};
 	
-	return(class_)=>{
+	return(class_, Adapter)=>{
 		const data = Symbol();
 		const isWrite = Symbol();
 		const lastWrite = Symbol();
@@ -70,6 +70,11 @@ module.exports=((ATA)=>{
 					return json;
 				}catch(e){
 					this.NO(e);
+					Adapter.Report({
+						Type: "Error",
+						Message: "Module " + this.Type + " => " + this.Name + " [" + this.Path + "]",
+						Root: e,
+					});
 					return e;
 				}
 			};

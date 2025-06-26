@@ -17,7 +17,7 @@ module.exports=((ATA)=>{
 		throw new Error("Invalid Mod File");
 	};
 	
-	return(class_)=>{
+	return(class_, Adapter)=>{
 		const data = Symbol();
 		return class extends class_{
 			static Path = Path;
@@ -49,6 +49,11 @@ module.exports=((ATA)=>{
 					return json;
 				}catch(e){
 					this.NO(e);
+					Adapter.Report({
+						Type: "Error",
+						Message: "Module " + this.Type + " => " + this.Name + " [" + this.Path + "]",
+						Root: e,
+					});
 					return e;
 				}
 			};

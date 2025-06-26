@@ -14,7 +14,7 @@ module.exports=((ATA)=>{
 		};
 	};
 	
-	return(class_)=>{
+	return(class_, Adapter)=>{
 		const data = Symbol();
 		return class extends class_{
 			static Path = Path;
@@ -57,6 +57,11 @@ module.exports=((ATA)=>{
 					this[data] = json;
 					return json;
 				}catch(e){
+					Adapter.Report({
+						Type: "Error",
+						Message: "Module " + this.Type + " => " + this.Name + " [" + this.Path + "]",
+						Root: e,
+					});
 					return e;
 				}
 			};
