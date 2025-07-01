@@ -178,11 +178,13 @@ module.exports=((ATA)=>{
 		const Execute = async (project, { Application, Environment })=>{
 			project.Controller.Add("DEV", {
 				Name: "DEV",
+				Environment,
 				Path: ATA.Path.join(ATA.MWD, "Controller"),
 			});
 			
 			const app = project.Application.Add("Default", {
 				Name: Application,
+				Environment,
 			});
 			
 			const service = project.Service.Default;
@@ -307,8 +309,10 @@ module.exports=((ATA)=>{
 				try{
 					return LoadJSON(path);
 				}catch(e){
-					console.log("Module not found " + path);
-					throw new Error("Module not found " + path);
+					//console.log("Module not found " + path);
+					//throw new Error("Module not found " + path);
+					console.log(e);
+					return e;
 				}
 			};
 			

@@ -67,17 +67,23 @@ module.exports=(()=>{
 			//return false;
 		};
 		
-		process.on("unhandledRejection", function(err){
-			console.log("UnHandled Rejection => ", err.toString(), "\n", err);
-			//process.exit();
+		process.on("unhandledRejection", (err)=>{
+			if(ATA.isDebug)console.log("UnHandled Rejection => ", err.toString(), "\n", err);
+			else{
+				console.log("\n\nERROR => UnHandled Rejection");
+				console.log(err.message);
+			}
 		});
 		
-		process.on("uncaughtException", function (err) {
-			console.log("Caught Exception => ", err.toString(), "\n", err);
-			//process.exit();
+		process.on("uncaughtException", (err)=>{
+			if(ATA.isDebug)console.log("Caught Exception => ", err.toString(), "\n", err);
+			else{
+				console.log("\n\nERROR => Caught Exception");
+				console.log(err.message);
+			}
 		});
 		
-		process.on("message", async (data)=>{
+		process.on("message", async(data)=>{
 			ATA.OnMessage({ data });
 		});
 		
