@@ -21,43 +21,26 @@ module.exports=((ATA)=>{
 				return ATA.Path.join(this.Directory, this.Name + ".js");
 			};
 			
-			/*
-			get Content(){
-				if(this[data])return this[data];
-				else return this.LoadRoot();
-			};
-			*/
-			
-			/*
-			LoadRoot(){
-				return this.LoadSandBox();
-			};
-			*/
+			/*get Directory(){
+				return ATA.Path.join(super.Directory, this.Name);
+			};*/
 			
 			get Return(){
 				return this[data];
 			};
 			
+			get Export(){
+				return this.Promise;
+			};
+			
 			async Execute(obj={}){
 				try{
+					//const json = this.LoadSandBox();
 					const json = await this.LoadSandBox({
-						Import: this.Import,
-						Inject: this.Inject,
 						...obj,
-						console,
-						setTimeout,
+						//console,
 					});
-					console.log("CONFIG ALOOO LOOOOO => ", json);
-					/*
-					const json = await this.LoadRoot({
-						Import: this.Import,
-						Inject: this.Inject,
-						...obj,
-						console,
-						setTimeout,
-					});
-					*/
-					this.OK(json);
+					//this.OK(json);
 					this[data] = json;
 					return json;
 				}catch(e){
@@ -69,25 +52,8 @@ module.exports=((ATA)=>{
 					return e;
 				}
 			};
-			/*
-			LoadSandBox(){
-				try{
-					const json = Check(this.LoadJSON(this.Path));
-					this[data] = json;
-					this.OK(json);
-					return json;
-				}catch(e){
-					this.NO(e);
-					console.log(e);
-					Adapter.Report({
-						Type: "Error",
-						Message: "Module " + this.Type + " => " + this.Name + " [" + this.Path + "]",
-						Root: e,
-					});
-					return e;
-				}
-			};
-			*/
+			
+			//Serialize(){};
 		};
 	};
 })(ATA());

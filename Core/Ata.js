@@ -24,6 +24,7 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	const _f = function(){/*
 		
 	*/};
+	
 	switch((function(){
 		return 0;
 		const hextable = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
@@ -45,7 +46,8 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 		case 0:
 		break;
 	}
-	const DecodeObject = function(obj){
+	
+	const DecodeObject = (obj)=>{
 		if(obj)switch((typeof obj).toLowerCase()){
 			default:
 			case "string": // String
@@ -97,7 +99,8 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 			break;
 		}
 	};
-	const FormatTime = function(oMsec) {
+	
+	const FormatTime = (oMsec)=>{
 		let ftext = "[Y-M-D] [H:m:S]";
 		const micSec = oMsec % 1000;
 		let totalcount = Math.floor(oMsec/1000);
@@ -131,13 +134,15 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 		ftext = ftext.replace("S",(sec/100).toFixed(2).substr(2)+(micSec/1000).toFixed(3).substr(1));
 		return ftext;
 	};
-	const DoFinalize = function(func, args){
+	
+	const DoFinalize = (func, args)=>{
 		const THAT = this;
 		setTimeout(()=>{
 			func.apply(THAT,[...args]);
 		},1);
 	};
-	const waitUntil = async function(if_, eval_,time_=25) {
+	
+	const WaitUntil = async(if_, eval_, time_=25)=>{
 		return await new Promise((resolve, reject)=>{
 			const f_temp = ()=>{
 				if(eval(if_))resolve(eval(eval_));
@@ -146,21 +151,25 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 			f_temp();
 		});
 	};
-	const isTimeCycled = function(lasttime, period){
+	
+	const isTimeCycled = (lasttime, period)=>{
 		const thisTime = (new Date()).getTime();
 		const PivotTime = thisTime % period;
 		const lastPivotTime = lasttime % period;
 		return(PivotTime < lastPivotTime);
 	};
+	
 	const MakeASync = async(func, args=[])=>{
 		return await func(...args);
 	};
+	
 	const RunInTime = async(func, timeout=10000)=>{
-		return await new Promise((resolve, reject) => {
+		return await new Promise((resolve, reject)=>{
 			MakeASync(func).then(resolve).catch(reject);
 			setTimeout(reject, timeout);
 		});
 	};
+	
 	const TryerASync = async(arr=[], timeout=10000)=>{
 		return await new Promise(async(resolve, reject)=>{
 			const resp = [];
@@ -177,6 +186,34 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 			}
 			return reject(resp);
 		});
+	};
+	
+	const Debounce = (func, wait=1000)=>{
+		let timeout;
+		return function(){
+			const context = this;
+			const args = [...arguments];
+			timeout && clearTimeout(timeout);
+			timeout = setTimeout(()=>{
+				func.apply(context, args);
+			}, wait);
+		};
+	};
+	
+	const Throttle = (func, limit=1000)=>{
+		let inThrottle;
+		return function(){
+			const context = this;
+			const args = [...arguments];
+			if(!inThrottle){
+				func.apply(context, args);
+				inThrottle = true;
+				setTimeout(()=>{
+					inThrottle = false;
+				}, limit);
+				
+			}
+		};
 	};
 	
 	var ATA = function(){};
@@ -401,14 +438,16 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 		},200);
 	},10);
 	
-	ATA.waitUntil = waitUntil;
+	ATA.DecodeObject = DecodeObject;
+	ATA.FormatTime = FormatTime;
+	ATA.DoFinalize = DoFinalize;
+	ATA.waitUntil = WaitUntil;
 	ATA.isTimeCycled = isTimeCycled;
 	ATA.MakeASync = MakeASync;
 	ATA.RunInTime = RunInTime;
 	ATA.TryerASync = TryerASync;
-	ATA.DoFinalize = DoFinalize;
-	ATA.FormatTime = FormatTime;
-	ATA.DecodeObject = DecodeObject;
+	ATA.Debounce = Debounce;
+	ATA.Throttle = Throttle;
 	
 	module.exports = ()=>{
 		return ATA;

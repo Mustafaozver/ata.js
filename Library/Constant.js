@@ -1,6 +1,9 @@
 module.exports=((ATA)=>{
 	const Path = "./Constant/";
 	
+	
+	
+	
 	const Check = (data)=>{
 		try{
 			return JSON.parse(JSON.stringify(data));
@@ -8,7 +11,7 @@ module.exports=((ATA)=>{
 			//throw e;
 			console.warn(e);
 		}
-		throw new Error("Invalid Mod File");
+		throw new Error("Invalid Config File");
 	};
 	
 	const FixFormat = (data)=>{
@@ -51,6 +54,40 @@ module.exports=((ATA)=>{
 				else return this.LoadRoot();
 			};
 			
+			get Export(){
+				return this[data];
+			};
+			
+			get Return(){
+				return this.Export;
+			};
+			
+			Set(key="", value=false){
+				try{
+					this[data]["" + key] = value;
+				}catch(e){
+					Adapter.Report({
+						Type: "Error",
+						Message: "Module " + this.Type + " => " + this.Name + " [" + this.Path + "]\nSET KEY-VALUE error",
+						Root: e,
+					});
+					return e;
+				}
+			};
+			
+			Get(key=""){
+				try{
+					return this[data]["" + key];
+				}catch(e){
+					Adapter.Report({
+						Type: "Error",
+						Message: "Module " + this.Type + " => " + this.Name + " [" + this.Path + "]\nGET KEY error",
+						Root: e,
+					});
+					return e;
+				}
+			};
+			
 			Save(){
 				if(!this[isWrite])return;
 				ATA.FS.writeFileSync(this.Path, JSON.stringify(FixFormat(this[data]), null, "\t"));
@@ -78,6 +115,22 @@ module.exports=((ATA)=>{
 					return e;
 				}
 			};
+			
+			Execute(){
+				try{
+					//const json = this.LoadSandBox();
+					return this.LoadRoot();
+				}catch(e){
+					Adapter.Report({
+						Type: "Error",
+						Message: "Module " + this.Type + " => " + this.Name + " [" + this.Path + "]",
+						Root: e,
+					});
+					return e;
+				}
+			};
+			
+			//Serialize(){};
 		};
 	};
 })(ATA());

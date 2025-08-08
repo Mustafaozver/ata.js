@@ -100,7 +100,7 @@ module.exports=((ATA)=>{
 			};
 			
 			get Return(){
-				return this[data];
+				return this[data_];
 			};
 			
 			get Type(){
@@ -147,6 +147,8 @@ module.exports=((ATA)=>{
 					return e;
 				}
 			};
+			
+			//Serialize(){};
 		};
 	};
 })(ATA());

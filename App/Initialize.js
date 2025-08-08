@@ -72,9 +72,27 @@
 		});
 	};
 	
-	const ApplyTemplate = async(name, project_path, package, me)=>{
-		const template = ATA.Require(ATA.Path.join(MWD, "./Library/Build/", name + ".js"));
-		return await template(project_path, package, me);
+	const ApplyTemplate = async(name, project_path, package, me, def=false)=>{
+		
+		const APPLY = ()=>{
+			const template = ATA.Require(ATA.Path.join(MWD, "./Library/Build/", name + ".js"));
+			console.log("Applying Base: " + name + "\n");
+			return template(project_path, package, me);
+		};
+		
+		if(def)return await APPLY();
+		
+		console.log("Apply Base: " + name);
+		console.log("Do you want to apply this template? (Yes/No) ");
+		while(true){
+			const ans = def || await GetEntry("No");
+			if(ye_regex.test(ans)){
+				return await APPLY();
+			} else if(no_regex.test(ans)){
+				console.log("Template skipped: " + name + "\n");
+				return;
+			}
+		}
 	};
 	
 	const Setup_Main = (project_path, package, me)=>{
@@ -227,8 +245,8 @@
 		
 		await Setup_OS(project_path, package, me);
 		
+		await ApplyTemplate("PLAIN", project_path, package, me, true);
 		await ApplyTemplate("COMPILE", project_path, package, me);
-		await ApplyTemplate("PLAIN", project_path, package, me);
 		await ApplyTemplate("ELECTRON", project_path, package, me);
 		//await ApplyTemplate("REACT", project_path, package, me);
 		//await ApplyTemplate("EXPRESS", project_path, package, me);

@@ -14,7 +14,7 @@
 	const Setup = async()=>{
 		let worker = null;
 		
-		const path = ATA.Path.join(ATA.MWD, "./App/Run.js");
+		const path = ATA.Path.join(ATA.MWD, "./App/Run.Electron.2.js");
 		
 		const Start = ()=>{
 			worker = CP.spawn("npx electron", [path], {

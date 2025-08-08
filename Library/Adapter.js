@@ -18,6 +18,13 @@ module.exports=((ATA)=>{
 		return _global;
 	};
 	
+	const GetNativeModule = (name)=>{
+		if(typeof process !== "undefined")return require("node:" + name);
+		if(typeof Deno !== "undefined")return import(name);
+		if(typeof Bun !== "undefined")return require("node:" + name);
+		if(typeof window !== "undefined")return window[name];
+	};
+	
 	const GenerateServiceGlobal = ()=>{
 		return{
 			...TimeFunctions,
@@ -41,5 +48,6 @@ module.exports=((ATA)=>{
 	return{
 		GenerateServiceGlobal,
 		Report,
+		GetNativeModule,
 	};
 })(ATA());

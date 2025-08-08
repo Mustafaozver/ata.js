@@ -364,7 +364,8 @@ module.exports=((ATA)=>{
 					this.Constant.Add(constantKeys[i], {
 						Name,
 						Environment,
-					});
+					})
+					.Execute();
 				}
 				
 				for(let i=0; i<libraryKeys.length; i++){

@@ -15,6 +15,8 @@ module.exports=((ATA)=>{
 			get Type(){
 				return "InterFace";
 			};
+			
+			//Serialize(){};
 		};
 	};
 })(ATA());

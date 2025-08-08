@@ -67,8 +67,9 @@ module.exports=((ATA)=>{
 	
 	const Class = (()=>{
 		const Class = class{
-			constructor(){
-				
+			Environment = null;
+			constructor(config={}){
+				this.Environment = { ...config.Environment };
 			};
 			toString(){
 				return"[PROJECT OBJECT]";
@@ -95,7 +96,8 @@ module.exports=((ATA)=>{
 			constructor(config={}){
 				this[name] = config.Name;
 				this[path] = config.Path;
-				this.Environment = {...config.Environment};
+				this.Environment = { ...config.Environment };
+				ATA[config.Path] = this;
 			};
 			
 			get Path(){

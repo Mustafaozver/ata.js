@@ -150,6 +150,8 @@ module.exports=((ATA)=>{
 			Terminate(){
 				
 			};
+			
+			//Serialize(){};
 		};
 	};
 })(ATA());

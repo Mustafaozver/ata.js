@@ -15,6 +15,8 @@ module.exports=((ATA)=>{
 			get Type(){
 				return "Document";
 			};
+			
+			//Serialize(){};
 		};
 	};
 })(ATA());

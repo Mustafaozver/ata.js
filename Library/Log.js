@@ -115,6 +115,8 @@ module.exports=((ATA)=>{
 			set Warn(obj){
 				
 			};
+			
+			//Serialize(){};
 		};
 	};
 })(ATA());

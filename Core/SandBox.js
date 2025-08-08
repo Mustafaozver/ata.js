@@ -256,7 +256,9 @@ module.exports = ((ATA)=>{
 	const RunJS = (code="", obj={}, args=[])=>{
 		try{
 			const sandbox = GenerateDefault(obj);//, console.log);
-			const compiled = "var __=null;with(this){_;(" + "__=" + "(()=>{" + code + "})());};__";
+			//const compiled = "var _m_=null;with(this){_;(" + "_m_=" + "(()=>{" + code + "})());};return _m_";
+			const compiled = "with(this){_;return(" + "" + "(args)=>{" + code + "})([...arguments]);}";
+			//const func = new Function("sandbox", compiled);
 			const resp = Function(compiled).apply(sandbox, [...args]);
 			return resp;
 		}catch(e){
