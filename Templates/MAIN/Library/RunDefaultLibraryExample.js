@@ -6,11 +6,11 @@ const Exp = {};
 return(()=>{
 	
 	Exp.Fonk1 = ()=>{
-		console.log("RunDefaultLibraryExample => Fonk1");
+		//console.log("RunDefaultLibraryExample => Fonk1");
 	};
 	
 	setTimeout(()=>{
-		console.log("RunDefaultLibraryExample => TIMEOUT, ready Library signal, trigger OK");
+		//console.log("RunDefaultLibraryExample => TIMEOUT, ready Library signal, trigger OK");
 		OK("OK");
 	}, 1000);
 	
