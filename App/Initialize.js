@@ -266,6 +266,7 @@
 	
 	ATA.Setups.push(()=>{
 		ClearScreen();
+		ATA.Require(ATA.Path.join(ATA.MWD, "./App/Greeting.js"));
 		rl = RL.createInterface({
 			input: process.stdin,
 			output: process.stdout,
