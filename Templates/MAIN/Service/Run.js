@@ -3,12 +3,12 @@
 Setup(()=>{
 	Queue("order", [
 	(OK, NO)=>{
-		const lib = Library.Default;
+		const lib = Project.Library.Default;
 		lib.Execute();
 		lib.Promise.then(OK).catch(NO);
 	},
 	(OK, NO)=>{
-		const con = Controller.Default;
+		const con = Project.Controller.Default;
 		con.Execute();
 		con.Promise.then(OK).catch(NO);
 	},

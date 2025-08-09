@@ -15,17 +15,17 @@
 		"Default": "THREAD1"
 	},
 	"Library": {
-		"Default": "Run",
-		"Library0": "Library0"
+		"Default": "RunDefaultLibraryExample",
+		"Library0": "LibraryExample"
 	},
 	"Controller": {
-		"Run": "Run",
-		"Controller0": "Controller0"
+		"Default": "RunDefaultControllerExample",
+		"Controller0": "ControllerExample"
 	},
 	"Core": {
 		"Default": "Run"
 	},
-	"Service":{
+	"Service": {
 		"Default": "Run",
 		"Service0": "Service0"
 	}
