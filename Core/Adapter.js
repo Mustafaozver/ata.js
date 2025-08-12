@@ -146,13 +146,21 @@ module.exports=(()=>{
 		
 		const isASYNC = typeof Promise !== "undefined";
 		
+		ATA.Platform = {};
+		
+		ATA.Platform.Detected = {
+			isNODE,
+			isBROWSER,
+			isBUN,
+			isDENO,
+			isASYNC,
+		};
+		
 		if(isNODE)_NODEJS(ATA, ANA, GLOBAL);
 		else if(isBROWSER)_BROWSER(ATA, ANA, GLOBAL);
 		else if(isBUN)_BUN(ATA, ANA, GLOBAL);
 		else if(isDENO)_DENO(ATA, ANA, GLOBAL);
 		else _OTHER_PLATFORM(ATA, ANA, GLOBAL);
-		
-		
 		
 		if(isASYNC)_ASYNC(ATA, ANA, GLOBAL);
 		// os

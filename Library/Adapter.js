@@ -8,13 +8,83 @@ module.exports=((ATA)=>{
 		clearImmediate,
 	};
 	
+	const GenerateSpecialize = ()=>{
+		const GLOBAL = {
+			...(ATA.Platform.Detected),
+		};
+		
+		if(ATA.Platform.Detected.isNODE){
+			GLOBAL.AllowedModules = {
+				"fs": "1.0.0",
+				"path": "1.0.0",
+				"os": "1.0.0",
+				"http": "1.0.0",
+				"https": "1.0.0",
+				"url": "1.0.0",
+				"crypto": "1.0.0",
+				"stream": "1.0.0",
+				"events": "1.0.0",
+				"util": "1.0.0",
+				"child_process": "1.0.0",
+			};
+		}
+		
+		if(ATA.Platform.Detected.isBROWSER){
+			GLOBAL.AllowedModules = {
+				"fetch": "1.0.0",
+				"WebSocket": "1.0.0",
+				"XMLHttpRequest": "1.0.0",
+				"localStorage": "1.0.0",
+				"sessionStorage": "1.0.0",
+				"document": "1.0.0",
+				"window": "1.0.0",
+				"navigator": "1.0.0",
+			};
+		}
+		
+		if(ATA.Platform.Detected.isDENO){
+			GLOBAL.AllowedModules = {
+				"fs": "1.0.0",
+				"path": "1.0.0",
+				"os": "1.0.0",
+				"http": "1.0.0",
+				"https": "1.0.0",
+				"url": "1.0.0",
+				"crypto": "1.0.0",
+				"stream": "1.0.0",
+				"events": "1.0.0",
+				"util": "1.0.0",
+				"child_process": "1.0.0",
+			};
+		}
+		
+		if(ATA.Platform.Detected.isBUN){
+			GLOBAL.AllowedModules = {
+				"fs": "1.0.0",
+				"path": "1.0.0",
+				"os": "1.0.0",
+				"http": "1.0.0",
+				"https": "1.0.0",
+				"url": "1.0.0",
+				"crypto": "1.0.0",
+				"stream": "1.0.0",
+				"events": "1.0.0",
+				"util": "1.0.0",
+				"child_process": "1.0.0",
+			};
+		}
+		
+		return GLOBAL;
+	};
+	
 	const GenerateGlobal = ()=>{
 		const _global = {};
-		if(typeof process !== "undefined")_global.process = process;
+		if(ATA.Platform.Detected.isNODE)_global.process = process;
+		if(ATA.Platform.Detected.isBROWSER)_global.window = window;
+		if(ATA.Platform.Detected.isDENO)_global.Deno = Deno;
+		if(ATA.Platform.Detected.isBUN)_global.Bun = Bun;
+		
 		if(typeof console !== "undefined")_global.console = console;
-		if(typeof window !== "undefined")_global.window = window;
-		if(typeof Deno !== "undefined")_global.Deno = Deno;
-		if(typeof Bun !== "undefined")_global.Bun = Bun;
 		return _global;
 	};
 	
@@ -26,9 +96,28 @@ module.exports=((ATA)=>{
 	};
 	
 	const GenerateServiceGlobal = ()=>{
+		const GLOBAL = {};
+		
+		if(ATA.Platform.Detected.isNODE){
+			GLOBAL.GLOBAL = process;
+		}
+		
+		if(ATA.Platform.Detected.isBROWSER){
+			GLOBAL.GLOBAL = window;
+		}
+		
+		if(ATA.Platform.Detected.isDENO){
+			GLOBAL.GLOBAL = Deno;
+		}
+		
+		if(ATA.Platform.Detected.isBUN){
+			GLOBAL.GLOBAL = Bun;
+		}
+		
 		return{
-			...TimeFunctions,
 			...GenerateGlobal(),
+			...TimeFunctions,
+			...GLOBAL,
 		};
 	};
 	
@@ -45,7 +134,12 @@ module.exports=((ATA)=>{
 		console.log(Root.message);
 	};
 	
+	ATA.Setups.push(()=>{
+		
+	});
+	
 	return{
+		GenerateSpecialize,
 		GenerateServiceGlobal,
 		Report,
 		GetNativeModule,

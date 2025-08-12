@@ -13,8 +13,13 @@ module.exports=((ATA)=>{
 	};
 	
 	return(class_, Adapter)=>{
+		const GLOBAL = Adapter.GenerateSpecialize();
 		
 		const Require = (class_, name)=>{
+			if(GLOBAL.AllowedModules[name]){
+				return ATA.Require(name);
+			}
+			
 			if(class_[alloweds][name]){
 				return ATA.Require(name);
 			}
@@ -67,10 +72,12 @@ module.exports=((ATA)=>{
 						Import: this.Import,
 						Inject: this.Inject,
 						Require: this.Require,
+						console,
 						
 						Buffer,
 						Function,
 						
+						//...GLOBAL,
 						...obj,
 					});
 					this[data] = json;

@@ -59,4 +59,5 @@ git status
 ##bash
 
 echo "BYE"
+npm publish
 exit 0
