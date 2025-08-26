@@ -57,10 +57,10 @@ module.exports=(()=>{
 		////GLOBAL.ATA = null;
 		////GLOBAL.ANA = null;
 		
-		const _require = (modnames)=>{
+		const _require = (modnames, path=[])=>{
 			for(let n=0;n<modnames.length;n++){
 				try{
-					return require(modnames[n]);
+					return require(modnames[n], path);
 				}catch(e){}
 			}
 			throw new Error("Module is not loaded.");
@@ -94,7 +94,7 @@ module.exports=(()=>{
 		ATA.FS = require("fs");
 		ATA.MWD = ATA.Path.join(__dirname, "/../");
 		
-		ATA.Require = (name)=>{ // root
+		ATA.Require = (name, path=[])=>{ // root
 			try{
 				if(ATA.__reqs[name])return ATA.__reqs[name];
 				const module = _require([
@@ -102,7 +102,7 @@ module.exports=(()=>{
 					ATA.Path.join(ATA.CWD, "" + name),
 					ATA.Path.join(ATA.MWD, "" + name),
 					name
-				]);
+				], path);
 				return(ATA.__reqs[name] = module);
 			}catch(e){
 				console.log("Module " + name + " is missing or corrupted.", e);

@@ -17,7 +17,10 @@ module.exports=((ATA)=>{
 		
 		const Require = (class_, name)=>{
 			if(GLOBAL.AllowedModules[name]){
-				return ATA.Require(name);
+				return ATA.Require(name, [
+					ATA.Path.join(ATA.CWD, "./node_modules"),
+					ATA.Path.join(ATA.MWD, "./node_modules"),
+				]);
 			}
 			
 			if(class_[alloweds][name]){
