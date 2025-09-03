@@ -1,13 +1,5 @@
 ((ATA)=>{
-	const RL = ATA.Require("node:readline");
-	const CP = ATA.Require("node:child_process");
-	const CWD = ATA.CWD;
-	const MWD = ATA.MWD;
-	
-	const no_regex = /^(((H|h)+(a)*(y)*(ı)*(r)*)|((N|n)+(o)*))$/i; // NO or HAYIR
-	const ye_regex = /^(((E|e)+(v)*(e)*(t)*)|((Y|y)+(e)*(s)*))$/i; // YES or EVET
-	
-	let rl = null;
+	const Terminal = ATA.Require("./Library/Terminal.js");
 	
 	process["__MODE"] = "RUN";
 	
@@ -44,8 +36,10 @@
 		//Path: "./Mod/Run.json",
 	});
 	
-	project.Execute("Run").then(()=>{
-		
+	project.Execute("Run", {
+		Terminal,
+	}).then(()=>{
+		//console.log("tamam\n");
 	});
 	
 })(ATA());

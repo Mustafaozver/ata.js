@@ -175,7 +175,9 @@ module.exports=((ATA)=>{
 	
 	const extendedProject = ((class_)=>{
 		
-		const Execute = async (project, { Application, Environment })=>{
+		const Execute = async (project, obj={})=>{
+			const { Application, Environment } = obj;
+			
 			project.Controller.Add("DEV", {
 				Name: "DEV",
 				Environment,
@@ -190,10 +192,14 @@ module.exports=((ATA)=>{
 			const service = project.Service.Default;
 			//project.Application.Default;
 			
-			service.Execute({});
+			service.Execute({
+				...obj,
+			});
 			await service.Promise;
 			
-			app.Execute({});
+			app.Execute({
+				...obj,
+			});
 			await app.Promise;
 			
 			const dirPath = ATA.Path.join(ATA.CWD, "Extension");
@@ -338,7 +344,7 @@ module.exports=((ATA)=>{
 				});
 			};
 			
-			async Execute(name=""){
+			async Execute(name="", obj={}){
 				this[MODNAME] = name;
 				const mod = this.Mod.Get(name);
 				const { THREAD, RESTART, Environment, Application, Config, Constant, Library, Controller, /* Core, */ Service} = await mod.Content;
@@ -409,6 +415,7 @@ module.exports=((ATA)=>{
 				Execute(this, {
 					Application,
 					Environment,
+					...obj,
 				});
 			};
 		};
