@@ -1,6 +1,12 @@
 module.exports=((ATA)=>{
 	const Path = "./Controller/";
 	
+	const GenerateFunction = (func, obj={})=>{
+		return function(){
+			return func.apply(obj, [...arguments]);
+		};
+	};
+	
 	return(class_, Adapter)=>{
 		const data = Symbol();
 		return class extends class_{
@@ -18,23 +24,27 @@ module.exports=((ATA)=>{
 			};
 			
 			get Path(){
-				return ATA.Path.join(this.Directory, this.Name + "/" + this.Name + ".js");
+				return ATA.Path.join(this.Directory, this.Name + ".js");
 			};
 			
-			/*get Directory(){
+			get Directory(){
 				return ATA.Path.join(super.Directory, this.Name);
-			};*/
+			};
 			
 			get Return(){
 				return this[data];
+			};
+			
+			async Import(path, obj={}){
+				return await super.Import(ATA.Path.join(ATA.CWD, this.Directory, path), obj);
 			};
 			
 			async Execute(obj={}){
 				try{
 					//const json = this.LoadSandBox();
 					const json = await this.LoadRoot({
-						Import: this.Import,
-						Inject: this.Inject,
+						Import: GenerateFunction(this.Import, this),
+						Inject: GenerateFunction(this.Inject, this),
 						...obj,
 						console,
 						setTimeout,

@@ -188,6 +188,12 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 		});
 	};
 	
+	const Sleep = async(time=1)=>{
+		return new Promise((resolve, reject)=>{
+			setTimeout(resolve, time - 0);
+		});
+	};
+	
 	const Debounce = (func, wait=1000)=>{
 		let timeout;
 		return function(){
@@ -445,6 +451,7 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	ATA.MakeASync = MakeASync;
 	ATA.RunInTime = RunInTime;
 	ATA.TryerASync = TryerASync;
+	ATA.Sleep = Sleep;
 	ATA.Debounce = Debounce;
 	ATA.Throttle = Throttle;
 	

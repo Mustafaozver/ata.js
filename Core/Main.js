@@ -134,9 +134,9 @@ module.exports=((ATA)=>{
 			};
 			
 			async Import(path, obj={}){
-				return this.Project.Import(ATA.Path.join(this.Directory, path), {
-					//Module: this,
-					//Project: this.Project,
+				return this.Project.Import(ATA.Path.join(path), {
+					Module: this,
+					Project: this.Project,
 					...obj,
 				});
 			};
@@ -195,11 +195,13 @@ module.exports=((ATA)=>{
 			service.Execute({
 				...obj,
 			});
+			
 			await service.Promise;
 			
 			app.Execute({
 				...obj,
 			});
+			
 			await app.Promise;
 			
 			const dirPath = ATA.Path.join(ATA.CWD, "Extension");
