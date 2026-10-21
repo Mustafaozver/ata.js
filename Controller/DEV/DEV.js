@@ -1,6 +1,7 @@
-//console.log("DEVVVVVVVV");
+// The Development Beta Controller File
 
-return(()=>{
+return((ATA)=>{
+	
 	OK("DEVOK");
 	return "DEVRETURN";
-})();
+})(ATA());

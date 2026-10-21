@@ -96,7 +96,7 @@ module.exports=((ATA)=>{
 			get Export(){
 				if(this[isReady])return this[exports];
 				//return null;
-				throw new Error("Module not ready" + this.Name);
+				throw new Error("Module not ready [" + this.Type + "] => " + this.Name);
 			};
 			
 			get Content(){
@@ -184,22 +184,48 @@ module.exports=((ATA)=>{
 				Path: ATA.Path.join(ATA.MWD, "Controller"),
 			});
 			
+			const Logger = project.Log.Add("Default", {
+				Name: "Default",
+				Environment,
+				Path: ATA.Path.join(ATA.MWD, "Log"),
+			});
+			
+			const BASE = project.Controller.Add("BASE", {
+				Name: "BASE",
+				Environment,
+				Path: ATA.Path.join(ATA.MWD, "Controller"),
+			});
+			
 			const app = project.Application.Add("Default", {
 				Name: Application,
 				Environment,
 			});
 			
 			const service = project.Service.Default;
-			//project.Application.Default;
+			
+			Logger.Execute({
+				...obj,
+			});
+			
+			await Logger.Promise;
+			
+			BASE.Execute({
+				...obj,
+				Logger,
+			});
+			
+			await BASE.Promise;
 			
 			service.Execute({
 				...obj,
+				Logger,
 			});
 			
 			await service.Promise;
 			
 			app.Execute({
 				...obj,
+				Logger,
 			});
 			
 			await app.Promise;
@@ -291,8 +317,6 @@ module.exports=((ATA)=>{
 				return this[MODNAME];
 			};
 			
-			
-			
 			LoadRoot(content, obj={}){
 				return this.LoadSandBox(content, {
 					Project: this,
@@ -349,19 +373,20 @@ module.exports=((ATA)=>{
 			async Execute(name="", obj={}){
 				this[MODNAME] = name;
 				const mod = this.Mod.Get(name);
-				const { THREAD, RESTART, Environment, Application, Config, Constant, Library, Controller, /* Core, */ Service} = await mod.Content;
+				const { THREAD, RESTART, Environment, Application, Config, Constant, Library, Log, Controller, /* Core, */ Service} = await mod.Content;
 				
 				const configKeys = Object.keys(Config);
 				const constantKeys = Object.keys(Constant);
 				const libraryKeys = Object.keys(Library);
+				const logKeys = Object.keys(Log);
 				const controllerKeys = Object.keys(Controller);
 				const serviceKeys = Object.keys(Service);
 				//const coreKeys = Object.keys(Core);
 				//const jobKeys = Object.keys(Job);
 				
-				for(let i=0; i<configKeys.length; i++){
-					const Name = Config[configKeys[i]];
-					this.Config.Add(configKeys[i], {
+				for(let i=0; i<logKeys.length; i++){
+					const Name = Log[logKeys[i]];
+					this.Log.Add(logKeys[i], {
 						Name,
 						Environment,
 					});
@@ -373,7 +398,20 @@ module.exports=((ATA)=>{
 						Name,
 						Environment,
 					})
-					.Execute();
+					.Execute({
+						Project: this,
+					});
+				}
+				
+				for(let i=0; i<configKeys.length; i++){
+					const Name = Config[configKeys[i]];
+					this.Config.Add(configKeys[i], {
+						Name,
+						Environment,
+					})
+					/*.Execute({
+						Project: this,
+					})*/;
 				}
 				
 				for(let i=0; i<libraryKeys.length; i++){

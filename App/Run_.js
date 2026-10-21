@@ -1,6 +1,9 @@
 ((ATA)=>{
 	const Terminal = ATA.Require("./Library/Terminal.js");
 	
+	const CWD = ATA.CWD;
+	const MWD = ATA.MWD;
+	
 	process["__MODE"] = "RUN";
 	
 	const packageJSON = ATA.Require(ATA.Path.join(ATA.CWD, "./package.json"));

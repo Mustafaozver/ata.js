@@ -1,119 +1,94 @@
 module.exports=((ATA)=>{
 	const Path = "./Log/";
 	
+	const noop = ()=>{return false};
+	
 	return(class_, Adapter)=>{
-		const _Assert = Symbol();
-		const _Clear = Symbol();
-		const _Debug = Symbol();
-		const _Error = Symbol();
-		const _Info = Symbol();
 		const _Log = Symbol();
 		const _Warn = Symbol();
+		const _Error = Symbol();
+		const _Info = Symbol();
+		const _DeBug = Symbol();
+		
 		return class extends class_{
 			static Path = Path;
-			[_Assert] = null;
-			[_Clear] = null;
-			[_Debug] = null;
-			[_Error] = null;
-			[_Info] = null;
+			
 			[_Log] = null;
 			[_Warn] = null;
+			[_Error] = null;
 			constructor(config){
 				super({
 					Path,
 					...config,
 				});
-				this[_Assert] = ()=>{};
-				this[_Clear] = ()=>{};
-				this[_Debug] = ()=>{};
-				this[_Error] = ()=>{};
-				this[_Info] = ()=>{};
-				this[_Log] = ()=>{};
-				this[_Warn] = ()=>{};
 			};
 			
 			get Type(){
 				return "Log";
 			};
 			
-			LoadRoot(){
-				return this.LoadSandBox();
+			get Path(){
+				return ATA.Path.join(this.Directory, this.Name + ".js");
 			};
 			
-			LoadSandBox(){
+			LoadRoot(obj={}){
+				return this.LoadSandBox(obj);
+			};
+			
+			async LoadSandBox(obj={}){
 				try{
-					super.LoadSandBox({
-						assert: console.assert,
-						clear: console.clear,
-						debug: console.debug,
-						error: console.error,
-						info: console.info,
-						log: console.log,
-						warn: console.warn,
-						
-						KeyAssert: _Assert,
-						KeyClear: _Clear,
-						KeyDebug: _Debug,
-						KeyError: _Error,
-						KeyInfo: _Info,
-						KeyLog: _Log,
-						KeyWarn: _Warn,
-						
-						FS: ATA.FS,
+					const functions = await super.LoadSandBox({
+						...obj,
+						console,
+						stdout: process.stdout,
+						stderr: process.stderr,
 					});
+					
+					this[_Log] = functions.Log || noop;
+					this[_Warn] = functions.Warn || false;
+					this[_Error] = functions.Error || false;
+					this[_Info] = functions.Info || false;
+					this[_DeBug] = functions.DeBug || false;
+					
+					this.OK(functions);
+					return functions;
 				}catch(e){
 					this.NO(e);
 					return e;
 				}
 			};
 			
-			get Assert(){
-				return this[_Assert];
-			};
-			set Assert(obj){
-				
+			async Execute(obj={}){
+				await this.LoadSandBox(obj);
 			};
 			
-			get Clear(){
-				return this[_Clear];
-			};
-			set Clear(obj){
-				
+			Log(){
+				const now = new Date();
+				return this[_Log].apply(this.Project, ["LOG", now, ...arguments]);
 			};
 			
-			get Debug(){
-				return this[_Debug];
-			};
-			set Debug(obj){
-				
-			};
-			
-			get Error(){
-				return this[_Error];
-			};
-			set Error(obj){
-				
+			Warn(){
+				const now = new Date();
+				if(this[_Warn])return this[_Warn].apply(this.Project, [now, ...arguments]);
+				else return this[_Log].apply(this.Project, ["WARN", now, ...arguments]);
 			};
 			
-			get Info(){
-				return this[_Info];
-			};
-			set Info(obj){
-				
-			};
-			
-			get Log(){
-				return this[_Log];
-			};
-			set Log(obj){
-				
+			Error(){
+				const now = new Date();
+				if(this[_Error])return this[_Error].apply(this.Project, [now, ...arguments]);
+				else return this[_Log].apply(this.Project, ["ERROR", now, ...arguments]);
 			};
 			
-			get Warn(){
-				return this[_Warn];
+			Info(){
+				const now = new Date();
+				if(this[_Info])return this[_Info].apply(this.Project, [now, ...arguments]);
+				else return this[_Log].apply(this.Project, ["INFO", now, ...arguments]);
 			};
-			set Warn(obj){
-				
+			
+			DeBug(){
+				const now = new Date();
+				if(this[_DeBug])return this[_DeBug].apply(this.Project, [now, ...arguments]);
+				else return this[_Log].apply(this.Project, ["DEBUG", now, ...arguments]);
 			};
 			
 			//Serialize(){};

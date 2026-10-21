@@ -16,7 +16,7 @@ module.exports=((ATA)=>{
 		return()=>{
 			const path = ATA.Path.join(ATA.MWD, "./App/Run.Thread.js");
 			const cmd = [...class_[precommand], path];
-			console.log(cmd, cmd[0], [...cmd.slice(1)]);
+			//console.log(cmd, cmd[0], [...cmd.slice(1)]);
 			const worker = wt.spawn(cmd[0], [...cmd.slice(1)], {
 				stdio: ["pipe", "pipe", "pipe", "ipc"],
 				shell: true,

@@ -5,6 +5,12 @@ module.exports=((ATA)=>{
 	const ldr = Symbol();
 	const alloweds = Symbol("ALLOWEDS");
 	
+	const GenerateFunction = (func, obj={})=>{
+		return function(){
+			return func.apply(obj, [...arguments]);
+		};
+	};
+	
 	const Loader = (class_, config)=>{
 		class_[alloweds] = {
 			...(config.Project.Environment.Dependency),
@@ -72,10 +78,9 @@ module.exports=((ATA)=>{
 			async Execute(obj={}){
 				try{
 					const json = this.LoadRoot({
-						Import: this.Import,
-						Inject: this.Inject,
-						Require: this.Require,
-						console,
+						Import: GenerateFunction(this.Import, this),
+						Inject: GenerateFunction(this.Inject, this),
+						Require: GenerateFunction(this.Require, this),
 						
 						Buffer,
 						Function,

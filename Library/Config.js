@@ -39,12 +39,12 @@ module.exports=((ATA)=>{
 					//const json = this.LoadSandBox();
 					const json = await this.LoadSandBox({
 						...obj,
-						//console,
 					});
-					//this.OK(json);
 					this[data] = json;
+					this.OK(json);
 					return json;
 				}catch(e){
+					this.NO(e);
 					Adapter.Report({
 						Type: "Error",
 						Message: "Module " + this.Type + " => " + this.Name + " [" + this.Path + "]",

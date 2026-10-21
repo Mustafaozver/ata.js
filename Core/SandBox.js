@@ -1,36 +1,50 @@
 module.exports = ((ATA)=>{
 	const SHARE = {};
+	const SCOPE_STACK = {};
 	
 	const PrivateKey = Symbol();
 	
-	const _GetParam = (key="")=>{
-		return SHARE[key + ""];
-	};
-	const _SetParam = (key="", value=false)=>{
-		SHARE[key + ""] = value;
-	};
-	
-	const ScopeController = (()=>{
-		const Class = class{
-			
-		};
-		
-		return Class;
-	})();
-	
-	const ScopeRegister = (scope)=>{
-		const scopec = new ScopeController({
-			scope,
-		});
-		
-		scope[PrivateKey] = scopec;
-		
-		return scopec;
+	const _GetParam = (key="", type="any")=>{
+		const value = SHARE.hasOwnProperty(key) ? SHARE[key + ""] : (ATA[key + ""] || ATA.GLOBAL[key + ""]);
+		switch(type){
+			default:
+			case"any":
+				return value;
+			case"number":
+				return value / 1;
+			case"string":
+				return value + "";
+			case"boolean":
+				return !!value;
+			case"array":
+				return[...value];
+			case"object":
+				return{...value};
+		}
 	};
 	
-	const ScopeCheck = (scope)=>{
-		if(scope[PrivateKey])return true;
-		else return false;
+	const _SetParam = (key="", value=false, type="any")=>{
+		switch(type){
+			default:
+			case"any":
+				SHARE[key + ""] = value;
+				break;
+			case"number":
+				SHARE[key + ""] = value / 1;
+				break;
+			case"string":
+				SHARE[key + ""] = value + "";
+				break;
+			case"boolean":
+				SHARE[key + ""] = !!value;
+				break;
+			case"array":
+				SHARE[key + ""] = [ ...value];
+				break;
+			case"object":
+				SHARE[key + ""] = { ...value };
+				break;
+		}
 	};
 	
 	const globalFix = (()=>{
@@ -50,9 +64,44 @@ module.exports = ((ATA)=>{
 		return fix;
 	})();
 	
+	const ScopeController = (()=>{
+		
+		const Class = class{
+			constructor(config){
+				this.Name = config.Name;
+			};
+		};
+		
+		return Class;
+	})();
+	
+	const ScopeRegister = (scope)=>{
+		const scopec = new ScopeController({
+			scope,
+		});
+		
+		scope[PrivateKey] = scopec;
+		SCOPE_STACK[scopec.Name] = scopec;
+		
+		return scopec;
+	};
+	
+	const ScopeCheck = (scope)=>{
+		if(scope[PrivateKey])return true;
+		else return false;
+	};
+	
 	const GenerateDefault = (obj, log=()=>{})=>{
+		
+		
+		const __ = (scope)=>{
+			ScopeRegister(scope);
+		};
+		
 		const globals = {
 			_:true,
+			__,
+			
 			// İşletim Sistemi ve Çevresel Değişkenlere Erişim
 			"process": undefined,
 			"os": undefined,
@@ -242,22 +291,27 @@ module.exports = ((ATA)=>{
 			},
 		};
 		
-		return new Proxy(globals, handler);
+		const proxy = new Proxy(globals, handler);
+		
+		return proxy;
 	};
 	
 	const RunTS = (code="", obj={}, args=[])=>{
 		try{
 			return RunJS(code, {...obj}, [...args]);
 		}catch(e){
-			return e;
+			throw e;
 		}
 	};
 	
 	const RunJS = (code="", obj={}, args=[])=>{
 		try{
-			const sandbox = GenerateDefault(obj);//, console.log);
+			const sandbox = GenerateDefault({
+				__PATH: "",
+				...obj,
+			});//, console.log);
 			//const compiled = "var _m_=null;with(this){_;(" + "_m_=" + "(()=>{" + code + "})());};return _m_";
-			const compiled = "with(this){_;return(" + "" + "(args)=>{" + code + "})([...arguments]);}";
+			const compiled = "with(this){_;__(this);return(" + "" + "(args)=>{" + code + "})([...arguments]);}";
 			//const func = new Function("sandbox", compiled);
 			const resp = Function(compiled).apply(sandbox, [...args]);
 			return resp;
@@ -268,9 +322,13 @@ module.exports = ((ATA)=>{
 	};
 	
 	const Require = (path, obj={}, args=[])=>{
-		return RunJS(ATA.FS.readFileSync(ATA.Path.join(ATA.CWD, path), {
+		const __PATH = ATA.Path.join(ATA.CWD, path);
+		return RunJS(ATA.FS.readFileSync(__PATH, {
 			encoding: "utf8"
-		}), obj, [...args]);
+		}), {
+			__PATH,
+			...obj
+		}, [...args]);
 	};
 	
 	return{

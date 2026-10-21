@@ -30,7 +30,6 @@ module.exports=((ATA)=>{
 					//const json = this.LoadSandBox();
 					const json = await this.LoadRoot({
 						...obj,
-						console,
 					});
 					this[data] = json;
 					return json;

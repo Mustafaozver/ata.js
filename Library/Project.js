@@ -13,12 +13,13 @@ module.exports=((ATA)=>{
 		const config_ = Symbol();
 		const project_ = Symbol();
 		const arr_ = Symbol();
+		const _default = Symbol();
 		const Class = class{
 			[class_] = null;
 			[config_] = null;
 			[project_] = null;
 			[arr_] = {};
-			
+			[_default] = "Default";
 			constructor(class__, project, config={}) {
 				this[class_] = class__;
 				this[config_] = config;
@@ -39,6 +40,15 @@ module.exports=((ATA)=>{
 				else throw new Error("UnKnown Object! " + name);
 			};
 			
+			SetDefault(name){
+				if(this[arr_][name]){
+					this[_default] = name;
+					return this.Default;
+				}else{
+					return false;
+				}
+			};
+			
 			get List(){
 				return Object.values(this[arr_]);
 			};
@@ -49,7 +59,7 @@ module.exports=((ATA)=>{
 			
 			get Default(){
 				try{
-					return this[arr_]["Default"];
+					return this[arr_][this[_default]];
 					//return this[arr_][this[project_].ModName];
 				}catch(e){
 					Adapter.Report({

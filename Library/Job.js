@@ -6,7 +6,11 @@ module.exports=((ATA)=>{
 	
 	const Loader = (class_, config)=>{
 		return async()=>{
-			const resp = await config.Project.Execute(config.Name);
+			const resp = await config.Project.Execute(config.Name, {
+				Thread: true,
+				Terminal: config.Terminal,
+				
+			});
 			class_[ldr] = resp;
 			class_.Environment = config.Environment;
 			class_.Project.Environment = config.Environment;
@@ -47,11 +51,11 @@ module.exports=((ATA)=>{
 				return this[data];
 			};
 			
-			async Execute(){
+			async Execute(obj={}){
 				try{
 					const json = this.LoadRoot({ // 
 						console,
-						
+						...obj,
 					});
 					this[ldr]();
 					this[data] = json;

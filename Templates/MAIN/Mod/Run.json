@@ -18,6 +18,9 @@
 		"Default": "RunDefaultLibraryExample",
 		"Library0": "LibraryExample"
 	},
+	"Log": {
+		"Default": "Default"
+	},
 	"Controller": {
 		"Default": "RunDefaultControllerExample",
 		"Controller0": "ControllerExample"

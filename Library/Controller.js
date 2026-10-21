@@ -46,7 +46,6 @@ module.exports=((ATA)=>{
 						Import: GenerateFunction(this.Import, this),
 						Inject: GenerateFunction(this.Inject, this),
 						...obj,
-						console,
 						setTimeout,
 					});
 					this[data] = json;

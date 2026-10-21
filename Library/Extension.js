@@ -40,7 +40,6 @@ module.exports=((ATA)=>{
 					const json = this.LoadRoot({
 						Import: this.Import,
 						Inject: this.Inject,
-						console,
 						...obj,
 					});
 					this[data] = json;

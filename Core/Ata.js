@@ -35,7 +35,6 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 			const ls = item.split("").map(function(item2, index2){
 				return hextable.indexOf(item2);
 			});
-			console.log(ls);
 		});
 	})(LICENSE)){
 		default:
@@ -194,7 +193,7 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 		});
 	};
 	
-	const Debounce = (func, wait=1000)=>{
+	const Debounce = (func, wait=1000)=>{ // ilt tetikte işi hazırlar, tetik aldıkça işi erteler, wait süre sonunda çalıştırır. Arama çubuğunda kullanılabilir
 		let timeout;
 		return function(){
 			const context = this;
@@ -206,7 +205,7 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 		};
 	};
 	
-	const Throttle = (func, limit=1000)=>{
+	const Throttle = (func, limit=1000)=>{ // ilk tetikte hemen işi yapar, limit süre geçinceye tetik alsa da işi yapmaz.
 		let inThrottle;
 		return function(){
 			const context = this;
@@ -218,6 +217,30 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 					inThrottle = false;
 				}, limit);
 			}
+		};
+	};
+	
+	const Curry = (func)=>{
+		const Curried = function(){
+			const args = [...arguments];
+			if(args.length >= func.length)return func.apply(this, args);
+			return function(){
+				return Curried.apply(this, [...args, ...arguments]);
+			};
+		};
+		
+		return Curried;
+	};
+	
+	const Memoize = (func)=>{
+		const cache = {};
+		return function(){
+			const args = [...arguments];
+			const key = JSON.stringify(args);
+			if(cache[key])return cache[key];
+			const result = func.apply(this, args);
+			cache[key] = result;
+			return result;
 		};
 	};
 	
@@ -350,9 +373,8 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 				try{
 					await tempf.apply(this,[this.LastActivite]);
 				}catch(e){
-					console.warn(e,tempf);
 					this.Setups.push(tempf);
-					return;
+					return console.warn(e, tempf);
 				}
 			}
 		},
@@ -454,6 +476,8 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	ATA.Sleep = Sleep;
 	ATA.Debounce = Debounce;
 	ATA.Throttle = Throttle;
+	ATA.Curry = Curry;
+	ATA.Memoize = Memoize;
 	
 	module.exports = ()=>{
 		return ATA;
@@ -462,5 +486,14 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	ATA.Thread = require("./Thread.js");
 	ATA.SandBox = require("./SandBox.js");
 	
-})((function(){return this})());
+})((function(){
+	if(typeof this !== "undefined")return this;
+	if(typeof window !== "undefined")return window;
+	if(typeof Deno !== "undefined")return Deno;
+	if(typeof globalThis !== "undefined")return globalThis;
+	if(typeof global !== "undefined")return global;
+	if(typeof self !== "undefined")return self;
+	if(typeof process !== "undefined")return process;
+	return{};
+})());
 else throw new Error("ATA is already called.");
